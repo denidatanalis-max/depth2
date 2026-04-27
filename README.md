@@ -1,15 +1,18 @@
-# Jurnal POC — Sistem Manajemen Jurnal Ilmiah
+# Depth Culture — Sistem Manajemen Jurnal Perusahaan
 
-Proof of Concept website untuk pengelolaan dan publikasi jurnal ilmiah internal.
+Website lengkap untuk pengelolaan dan publikasi Jurnal Perusahaan internal (9 tahap).
 
 ## Fitur
 
+- **Workflow 9 Tahap**: Sosialisasi → Approval → Upload → Verifikasi → Monitoring → Scoring → Rekomendasi → Publikasi
 - **Hierarki User**: Supervisor → Manager → Admin → Scoring (+ Super Admin)
-- **Workflow Cycle**: Buat Draft → Ajukan ke Manager → Approve/Tolak → Upload PDF → Verifikasi Admin → Revisi (loop)
+- **Scoring & Penilaian**: 4 kriteria (Orisinalitas, Metodologi, Kualitas Penulisan, Relevansi), skor 1-100
+- **3 Rekomendasi**: Layak Dipublikasikan / Perlu Revisi / Tidak Layak
+- **Halaman Publik**: Jurnal yang sudah dipublikasikan bisa dibaca tanpa login (`/publikasi/`)
 - **Data Isolation**: Supervisor tidak bisa melihat jurnal supervisor lain
 - **Dashboard per Role**: Setiap role punya tampilan dashboard berbeda
 - **Activity Log**: Riwayat lengkap setiap aksi pada jurnal
-- **File Upload**: Upload file jurnal PDF
+- **Revision Loop**: Jurnal bisa dikembalikan untuk revisi dari Admin atau Scoring
 
 ## Persyaratan
 
@@ -93,7 +96,7 @@ Scoring (Prof. Reviewer) — scoring1
 Super Admin — superadmin
 ```
 
-## Alur Workflow
+## Alur Workflow (9 Tahap)
 
 ```
 Step 01: Supervisor buat jurnal (Draft / Sosialisasi)
@@ -105,11 +108,32 @@ Step 03: Supervisor upload file jurnal (PDF)
 Step 04: Admin mulai verifikasi kelengkapan
     ↓
 Step 05: Admin monitoring → Lolos Verifikasi atau Minta Revisi
-    ↓ (jika minta revisi)
+    ↓ (jika minta revisi dari Admin)
     ↩ Kembali ke Step 02 (supervisor edit & ajukan ulang)
-    ↓ (jika lolos)
-    → Siap ke tahap Scoring (belum diimplementasi di POC ini)
+    ↓ (jika lolos verifikasi)
+Step 06: Scoring — Penilai memberikan skor (4 kriteria, 1-100 per kriteria)
+    ↓
+Step 07: Informasi & Rekomendasi — Feedback dari Scoring
+    ↓ (jika revisi dari Scoring)
+    ↩ Kembali ke Step 02 (supervisor edit & ajukan ulang)
+    ↓ (jika layak)
+Step 08: Rekomendasi — Status "Direkomendasikan"
+    ↓
+Step 09: Publikasi — Admin/SuperAdmin mempublikasikan jurnal
+    → Bisa diakses publik di /publikasi/
 ```
+
+## URL Penting
+
+| URL | Keterangan |
+|-----|------------|
+| `/` atau `/dashboard/` | Dashboard (sesuai role) |
+| `/login/` | Halaman login |
+| `/publikasi/` | Halaman publik jurnal yang sudah terbit |
+| `/publikasi/<id>/` | Detail jurnal publik dengan skor |
+| `/journal/create/` | Buat jurnal baru (Supervisor) |
+| `/journal/<id>/` | Detail jurnal (internal, per role) |
+| `/admin/` | Django Admin Panel (superadmin) |
 
 ## Struktur Project
 
@@ -120,9 +144,9 @@ jurnal_poc/
 │   ├── urls.py
 │   └── wsgi.py
 ├── journal/             # App utama
-│   ├── models.py        # Model: UserProfile, Journal, JournalLog
-│   ├── views.py         # Views per role
-│   ├── forms.py         # Form jurnal & review
+│   ├── models.py        # Model: UserProfile, Journal, JournalScore, JournalLog
+│   ├── views.py         # Views per role + public views
+│   ├── forms.py         # Form jurnal, review & scoring
 │   ├── urls.py          # URL routing
 │   ├── admin.py         # Django admin config
 │   └── management/
@@ -135,15 +159,20 @@ jurnal_poc/
 │   │   ├── supervisor.html
 │   │   ├── manager.html
 │   │   ├── admin.html
+│   │   ├── scoring.html
 │   │   └── superadmin.html
-│   └── journal/         # Halaman jurnal
-│       ├── create.html
-│       ├── detail.html
-│       ├── edit.html
-│       └── upload.html
+│   ├── journal/         # Halaman jurnal (internal)
+│   │   ├── create.html
+│   │   ├── detail.html
+│   │   ├── edit.html
+│   │   └── upload.html
+│   └── public/          # Halaman publik
+│       ├── journal_list.html
+│       └── journal_detail.html
 ├── static/              # Static files (CSS, JS)
 ├── media/               # Uploaded files
 ├── requirements.txt     # Dependencies
+├── passenger_wsgi.py    # File WSGI untuk cPanel
 ├── manage.py
 └── README.md
 ```
@@ -154,7 +183,7 @@ jurnal_poc/
 2. Setup Python App di cPanel → pilih Python 3.11
 3. Set Application root ke folder project
 4. Set Application URL
-5. Set Application startup file: `passenger_wsgi.py` (buat file ini, lihat bawah)
+5. Set Application startup file: `passenger_wsgi.py`
 6. Install requirements: `pip install -r requirements.txt`
 7. Jalankan: `python manage.py migrate && python manage.py seed_demo && python manage.py collectstatic --noinput`
 

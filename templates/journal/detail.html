@@ -5,34 +5,50 @@
 <!-- Workflow progress -->
 <div class="card mb-4">
     <div class="card-body py-3">
-        <div class="d-flex align-items-center gap-3 flex-wrap">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
             <span class="small text-muted me-2">Alur:</span>
             {% with s=journal.status %}
             <span class="workflow-step {% if s == 'draft' %}active{% elif s != 'draft' %}done{% endif %}">
                 <span class="step-num">01</span> Sosialisasi
             </span>
             <i class="bi bi-arrow-right text-muted"></i>
-            <span class="workflow-step {% if s == 'submitted' %}active{% elif s == 'approved' or s == 'uploaded' or s == 'under_review' or s == 'verified' or s == 'ready_scoring' %}done{% endif %}">
+            <span class="workflow-step {% if s == 'submitted' %}active{% elif s == 'approved' or s == 'uploaded' or s == 'under_review' or s == 'verified' or s == 'scoring' or s == 'recommended' or s == 'not_recommended' or s == 'published' %}done{% endif %}">
                 <span class="step-num">02</span> Approval
             </span>
             <i class="bi bi-arrow-right text-muted"></i>
-            <span class="workflow-step {% if s == 'approved' %}active{% elif s == 'uploaded' or s == 'under_review' or s == 'verified' or s == 'ready_scoring' %}done{% endif %}">
+            <span class="workflow-step {% if s == 'approved' %}active{% elif s == 'uploaded' or s == 'under_review' or s == 'verified' or s == 'scoring' or s == 'recommended' or s == 'not_recommended' or s == 'published' %}done{% endif %}">
                 <span class="step-num">03</span> Upload
             </span>
             <i class="bi bi-arrow-right text-muted"></i>
-            <span class="workflow-step {% if s == 'uploaded' or s == 'under_review' %}active{% elif s == 'verified' or s == 'ready_scoring' %}done{% endif %}">
+            <span class="workflow-step {% if s == 'uploaded' or s == 'under_review' %}active{% elif s == 'verified' or s == 'scoring' or s == 'recommended' or s == 'not_recommended' or s == 'published' %}done{% endif %}">
                 <span class="step-num">04</span> Verifikasi
             </span>
             <i class="bi bi-arrow-right text-muted"></i>
-            <span class="workflow-step {% if s == 'verified' %}active{% elif s == 'ready_scoring' %}done{% endif %}">
+            <span class="workflow-step {% if s == 'verified' %}active{% elif s == 'scoring' or s == 'recommended' or s == 'not_recommended' or s == 'published' %}done{% endif %}">
                 <span class="step-num">05</span> Monitoring
             </span>
+            <i class="bi bi-arrow-right text-muted"></i>
+            <span class="workflow-step {% if s == 'scoring' %}active{% elif s == 'recommended' or s == 'not_recommended' or s == 'published' %}done{% endif %}">
+                <span class="step-num">06</span> Scoring
+            </span>
+            <i class="bi bi-arrow-right text-muted"></i>
+            <span class="workflow-step {% if s == 'recommended' %}active{% elif s == 'published' %}done{% endif %}">
+                <span class="step-num">08</span> Rekomendasi
+            </span>
+            <i class="bi bi-arrow-right text-muted"></i>
+            <span class="workflow-step {% if s == 'published' %}done{% endif %}">
+                <span class="step-num">09</span> Publikasi
+            </span>
 
-            {% if s == 'rejected' or s == 'revision_needed' %}
-            <i class="bi bi-arrow-left text-danger"></i>
+            {% if s == 'rejected' or s == 'revision_needed' or s == 'score_revision' or s == 'not_recommended' %}
+            <i class="bi bi-arrow-left text-danger ms-2"></i>
             <span class="workflow-step active">
                 <span class="step-num" style="background:#ef4444;color:#fff;">!</span>
-                {% if s == 'rejected' %}Ditolak Manager{% else %}Perlu Revisi{% endif %}
+                {% if s == 'rejected' %}Ditolak Manager
+                {% elif s == 'revision_needed' %}Perlu Revisi (Admin)
+                {% elif s == 'score_revision' %}Revisi dari Scoring
+                {% elif s == 'not_recommended' %}Tidak Direkomendasikan
+                {% endif %}
             </span>
             {% endif %}
             {% endwith %}
@@ -65,6 +81,12 @@
                     <div class="col-sm-3 text-muted">Dibuat</div>
                     <div class="col-sm-9">{{ journal.created_at|date:"d M Y H:i" }}</div>
                 </div>
+                {% if journal.published_at %}
+                <div class="row mb-3">
+                    <div class="col-sm-3 text-muted">Dipublikasikan</div>
+                    <div class="col-sm-9">{{ journal.published_at|date:"d M Y H:i" }}</div>
+                </div>
+                {% endif %}
                 {% if journal.file %}
                 <div class="row mb-3">
                     <div class="col-sm-3 text-muted">File</div>
@@ -77,11 +99,61 @@
                 {% endif %}
                 {% if journal.abstract %}
                 <hr>
-                <h6>Abstrak</h6>
+                <h6>ringkasan</h6>
                 <p>{{ journal.abstract }}</p>
                 {% endif %}
             </div>
         </div>
+
+        <!-- Score display -->
+        {% if score %}
+        <div class="card mb-4">
+            <div class="card-header bg-success bg-opacity-10">
+                <h6 class="mb-0"><i class="bi bi-star-fill text-warning"></i> Hasil Penilaian (Scoring)</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small"><span>Orisinalitas</span><span>{{ score.originality }}/100</span></div>
+                            <div class="progress" style="height:8px;"><div class="progress-bar bg-primary" style="width:{{ score.originality }}%"></div></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small"><span>Metodologi</span><span>{{ score.methodology }}/100</span></div>
+                            <div class="progress" style="height:8px;"><div class="progress-bar bg-info" style="width:{{ score.methodology }}%"></div></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small"><span>Kualitas Penulisan</span><span>{{ score.writing_quality }}/100</span></div>
+                            <div class="progress" style="height:8px;"><div class="progress-bar bg-warning" style="width:{{ score.writing_quality }}%"></div></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small"><span>Relevansi</span><span>{{ score.relevance }}/100</span></div>
+                            <div class="progress" style="height:8px;"><div class="progress-bar bg-success" style="width:{{ score.relevance }}%"></div></div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Total Skor:</strong> <span class="fs-5 text-success">{{ score.total_score }}/400</span>
+                    </div>
+                    <div>
+                        <strong>Rekomendasi:</strong>
+                        <span class="badge bg-{% if score.recommendation == 'recommend' %}success{% elif score.recommendation == 'revision' %}warning{% else %}danger{% endif %} fs-6">
+                            {{ score.get_recommendation_display }}
+                        </span>
+                    </div>
+                </div>
+                {% if score.note %}
+                <div class="alert alert-light mt-3 mb-0 small">
+                    <strong>Catatan Penilai:</strong> {{ score.note }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Activity Log -->
         <div class="card">
@@ -114,7 +186,7 @@
                 <h6 class="mb-0 text-primary"><i class="bi bi-gear"></i> Aksi Supervisor</h6>
             </div>
             <div class="card-body">
-                {% if journal.status == 'draft' or journal.status == 'rejected' or journal.status == 'revision_needed' %}
+                {% if journal.status == 'draft' or journal.status == 'rejected' or journal.status == 'revision_needed' or journal.status == 'score_revision' %}
                 <a href="{% url 'journal_edit' journal.pk %}" class="btn btn-outline-secondary w-100 mb-2">
                     <i class="bi bi-pencil"></i> Edit Jurnal
                 </a>
@@ -132,6 +204,11 @@
                     {% else %}
                     Admin meminta revisi. Silakan perbaiki dan ajukan kembali ke Manager.
                     {% endif %}
+                </div>
+                {% elif journal.status == 'score_revision' %}
+                <div class="alert alert-danger small mt-2">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Scoring meminta revisi. Silakan perbaiki jurnal dan ajukan kembali.
                 </div>
                 {% endif %}
                 {% elif journal.status == 'submitted' %}
@@ -153,9 +230,26 @@
                 <div class="alert alert-info small">
                     <i class="bi bi-search"></i> Jurnal sedang diverifikasi oleh Admin...
                 </div>
-                {% elif journal.status == 'verified' %}
+                {% elif journal.status == 'scoring' %}
+                <div class="alert alert-info small">
+                    <i class="bi bi-clipboard-check"></i> Jurnal sedang dinilai oleh Scoring...
+                </div>
+                {% elif journal.status == 'recommended' %}
                 <div class="alert alert-success small">
-                    <i class="bi bi-check-circle"></i> Jurnal telah diverifikasi! Menunggu tahap selanjutnya.
+                    <i class="bi bi-check-circle"></i> Jurnal direkomendasikan untuk dipublikasikan! Menunggu Admin mempublikasikan.
+                </div>
+                {% elif journal.status == 'not_recommended' %}
+                <div class="alert alert-danger small">
+                    <i class="bi bi-x-circle"></i> Jurnal tidak direkomendasikan oleh Scoring.
+                </div>
+                {% elif journal.status == 'published' %}
+                <div class="alert alert-dark small">
+                    <i class="bi bi-journal-check"></i> Jurnal telah dipublikasikan!
+                    <a href="{% url 'public_journal_detail' journal.pk %}" target="_blank" class="d-block mt-1">Lihat halaman publik &rarr;</a>
+                </div>
+                {% else %}
+                <div class="alert alert-success small">
+                    <i class="bi bi-check-circle"></i> Jurnal telah diverifikasi.
                 </div>
                 {% endif %}
             </div>
@@ -196,14 +290,14 @@
         {% if profile.is_admin %}
         <div class="card mb-3">
             <div class="card-header bg-info bg-opacity-10">
-                <h6 class="mb-0 text-info"><i class="bi bi-shield-check"></i> Aksi Admin (Step 04/05)</h6>
+                <h6 class="mb-0 text-info"><i class="bi bi-shield-check"></i> Aksi Admin</h6>
             </div>
             <div class="card-body">
                 {% if journal.status == 'uploaded' %}
                 <form method="post" action="{% url 'admin_start_review' journal.pk %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-info w-100 mb-2">
-                        <i class="bi bi-search"></i> Mulai Verifikasi
+                        <i class="bi bi-search"></i> Mulai Verifikasi (Step 04)
                     </button>
                 </form>
                 {% elif journal.status == 'under_review' %}
@@ -213,7 +307,7 @@
                         <textarea name="note" class="form-control form-control-sm" rows="2" placeholder="Catatan verifikasi..."></textarea>
                     </div>
                     <button type="submit" class="btn btn-success w-100 mb-2">
-                        <i class="bi bi-check-circle"></i> Lolos Verifikasi
+                        <i class="bi bi-check-circle"></i> Lolos Verifikasi → Scoring (Step 06)
                     </button>
                 </form>
                 <form method="post" action="{% url 'admin_request_revision' journal.pk %}">
@@ -225,9 +319,87 @@
                         <i class="bi bi-arrow-counterclockwise"></i> Minta Revisi
                     </button>
                 </form>
+                {% elif journal.status == 'recommended' %}
+                <form method="post" action="{% url 'publish_journal' journal.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-dark w-100 mb-2">
+                        <i class="bi bi-journal-check"></i> Publikasikan Jurnal (Step 09)
+                    </button>
+                </form>
+                <div class="alert alert-success small">
+                    <i class="bi bi-check-circle"></i> Jurnal sudah direkomendasikan oleh Scoring. Siap dipublikasikan.
+                </div>
+                {% elif journal.status == 'published' %}
+                <div class="alert alert-dark small">
+                    <i class="bi bi-journal-check"></i> Jurnal telah dipublikasikan.
+                    <a href="{% url 'public_journal_detail' journal.pk %}" target="_blank" class="d-block mt-1">Lihat halaman publik &rarr;</a>
+                </div>
                 {% else %}
                 <p class="small text-muted mb-0">Tidak ada aksi yang tersedia untuk status ini.</p>
                 {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Scoring actions -->
+        {% if profile.is_scoring and journal.status == 'scoring' %}
+        <div class="card mb-3">
+            <div class="card-header bg-success bg-opacity-10">
+                <h6 class="mb-0 text-success"><i class="bi bi-star"></i> Penilaian Scoring (Step 06/07/08)</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'scoring_submit' journal.pk %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label small">Orisinalitas (1-100)</label>
+                        <input type="number" name="originality" min="1" max="100" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small">Metodologi (1-100)</label>
+                        <input type="number" name="methodology" min="1" max="100" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small">Kualitas Penulisan (1-100)</label>
+                        <input type="number" name="writing_quality" min="1" max="100" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small">Relevansi (1-100)</label>
+                        <input type="number" name="relevance" min="1" max="100" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small">Rekomendasi</label>
+                        <select name="recommendation" class="form-select" required>
+                            <option value="">-- Pilih --</option>
+                            <option value="recommend">Layak Dipublikasikan</option>
+                            <option value="revision">Perlu Revisi</option>
+                            <option value="reject">Tidak Layak</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small">Catatan Penilai</label>
+                        <textarea name="note" class="form-control" rows="3" placeholder="Catatan dan saran..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-check-lg"></i> Simpan Penilaian
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- SuperAdmin publish button -->
+        {% if profile.is_superadmin and journal.status == 'recommended' %}
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">
+                <h6 class="mb-0"><i class="bi bi-journal-check"></i> Publikasi</h6>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'publish_journal' journal.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-dark w-100">
+                        <i class="bi bi-globe"></i> Publikasikan Jurnal (Step 09)
+                    </button>
+                </form>
             </div>
         </div>
         {% endif %}

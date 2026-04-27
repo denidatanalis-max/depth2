@@ -1,5 +1,5 @@
 from django import forms
-from .models import Journal
+from .models import Journal, JournalScore
 
 
 class JournalCreateForm(forms.ModelForm):
@@ -8,7 +8,7 @@ class JournalCreateForm(forms.ModelForm):
         fields = ['title', 'abstract']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Masukkan judul jurnal'}),
-            'abstract': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Masukkan abstrak jurnal'}),
+            'abstract': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Masukkan ringkasan jurnal'}),
         }
 
 
@@ -30,3 +30,25 @@ class ReviewForm(forms.Form):
         widget=forms.Textarea(attrs={'rows': 3, 'placeholder': 'Tulis catatan...'}),
         required=False,
     )
+
+
+class ScoringForm(forms.ModelForm):
+    class Meta:
+        model = JournalScore
+        fields = ['originality', 'methodology', 'writing_quality', 'relevance', 'recommendation', 'note']
+        widgets = {
+            'originality': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
+            'methodology': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
+            'writing_quality': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
+            'relevance': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
+            'recommendation': forms.Select(attrs={'class': 'form-select'}),
+            'note': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Catatan dan saran untuk penulis...'}),
+        }
+        labels = {
+            'originality': 'Orisinalitas (1-100)',
+            'methodology': 'Metodologi (1-100)',
+            'writing_quality': 'Kualitas Penulisan (1-100)',
+            'relevance': 'Relevansi (1-100)',
+            'recommendation': 'Rekomendasi',
+            'note': 'Catatan Penilai',
+        }

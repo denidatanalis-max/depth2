@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=500, verbose_name='Judul Jurnal')),
-                ('abstract', models.TextField(blank=True, verbose_name='Abstrak')),
+                ('abstract', models.TextField(blank=True, verbose_name='ringkasan')),
                 ('status', models.CharField(choices=[('draft', 'Draft'), ('submitted', 'Diajukan ke Manager'), ('approved', 'Disetujui Manager'), ('rejected', 'Ditolak Manager'), ('uploaded', 'Jurnal Diupload'), ('under_review', 'Sedang Diverifikasi Admin'), ('revision_needed', 'Perlu Revisi'), ('verified', 'Diverifikasi Admin'), ('ready_scoring', 'Siap Dinilai')], default='draft', max_length=20, verbose_name='Status')),
                 ('file', models.FileField(blank=True, null=True, upload_to='journals/%Y/%m/', verbose_name='File Jurnal (PDF)')),
                 ('revision_count', models.PositiveIntegerField(default=0, verbose_name='Jumlah Revisi')),

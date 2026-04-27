@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Scoring{% endblock %}
+{% block content %}
+<h4>Dashboard Scoring (Penilai)</h4>
+<p>Selamat datang, {{ profile.user.get_full_name }}</p>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card border-start border-warning border-4">
+            <div class="card-body">
+                <small class="text-muted">Menunggu Penilaian</small>
+                <h3>{{ pending_scoring|length }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-start border-success border-4">
+            <div class="card-body">
+                <small class="text-muted">Sudah Dinilai</small>
+                <h3>{{ scored|length }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if pending_scoring %}
+<div class="card mb-4">
+    <div class="card-header bg-warning text-dark">
+        <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Jurnal Menunggu Penilaian</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th>Manager</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in pending_scoring %}
+                    <tr>
+                        <td><a href="{% url 'journal_detail' j.pk %}">{{ j.title }}</a></td>
+                        <td>{{ j.author.user.get_full_name }}</td>
+                        <td>{{ j.author.manager.user.get_full_name }}</td>
+                        <td><a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Nilai</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if scored %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-journal-check"></i> Jurnal Sudah Dinilai</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Judul</th>
+                        <th>Penulis</th>
+                        <th>Status</th>
+                        <th>Skor</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in scored %}
+                    <tr>
+                        <td><a href="{% url 'journal_detail' j.pk %}">{{ j.title }}</a></td>
+                        <td>{{ j.author.user.get_full_name }}</td>
+                        <td><span class="badge bg-{{ j.status_badge_class }}">{{ j.get_status_display }}</span></td>
+                        <td>{% if j.latest_score %}{{ j.latest_score.total_score }}/400{% else %}-{% endif %}</td>
+                        <td><a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

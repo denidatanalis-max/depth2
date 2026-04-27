@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Role(models.TextChoices):
@@ -64,12 +65,16 @@ class JournalStatus(models.TextChoices):
     UNDER_REVIEW = 'under_review', 'Sedang Diverifikasi Admin'
     REVISION_NEEDED = 'revision_needed', 'Perlu Revisi'
     VERIFIED = 'verified', 'Diverifikasi Admin'
-    READY_SCORING = 'ready_scoring', 'Siap Dinilai'
+    SCORING = 'scoring', 'Sedang Dinilai'
+    SCORE_REVISION = 'score_revision', 'Revisi dari Scoring'
+    RECOMMENDED = 'recommended', 'Direkomendasikan'
+    NOT_RECOMMENDED = 'not_recommended', 'Tidak Direkomendasikan'
+    PUBLISHED = 'published', 'Dipublikasikan'
 
 
 class Journal(models.Model):
     title = models.CharField('Judul Jurnal', max_length=500)
-    abstract = models.TextField('Abstrak', blank=True)
+    abstract = models.TextField('ringkasan', blank=True)
     author = models.ForeignKey(
         UserProfile,
         on_delete=models.CASCADE,
@@ -89,6 +94,7 @@ class Journal(models.Model):
         null=True,
     )
     revision_count = models.PositiveIntegerField('Jumlah Revisi', default=0)
+    published_at = models.DateTimeField('Tanggal Publikasi', null=True, blank=True)
     created_at = models.DateTimeField('Dibuat', auto_now_add=True)
     updated_at = models.DateTimeField('Diperbarui', auto_now=True)
 
@@ -111,9 +117,74 @@ class Journal(models.Model):
             JournalStatus.UNDER_REVIEW: 'warning',
             JournalStatus.REVISION_NEEDED: 'danger',
             JournalStatus.VERIFIED: 'success',
-            JournalStatus.READY_SCORING: 'success',
+            JournalStatus.SCORING: 'warning',
+            JournalStatus.SCORE_REVISION: 'danger',
+            JournalStatus.RECOMMENDED: 'success',
+            JournalStatus.NOT_RECOMMENDED: 'danger',
+            JournalStatus.PUBLISHED: 'dark',
         }
         return mapping.get(self.status, 'secondary')
+
+    @property
+    def latest_score(self):
+        return self.scores.order_by('-created_at').first()
+
+
+class JournalScore(models.Model):
+    journal = models.ForeignKey(
+        Journal,
+        on_delete=models.CASCADE,
+        related_name='scores',
+    )
+    scorer = models.ForeignKey(
+        UserProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        limit_choices_to={'role': Role.SCORING},
+    )
+    originality = models.PositiveIntegerField(
+        'Orisinalitas (1-100)',
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    )
+    methodology = models.PositiveIntegerField(
+        'Metodologi (1-100)',
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    )
+    writing_quality = models.PositiveIntegerField(
+        'Kualitas Penulisan (1-100)',
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    )
+    relevance = models.PositiveIntegerField(
+        'Relevansi (1-100)',
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    )
+    note = models.TextField('Catatan Penilai', blank=True)
+
+    class Recommendation(models.TextChoices):
+        RECOMMEND = 'recommend', 'Layak Dipublikasikan'
+        REVISION = 'revision', 'Perlu Revisi'
+        REJECT = 'reject', 'Tidak Layak'
+
+    recommendation = models.CharField(
+        'Rekomendasi',
+        max_length=20,
+        choices=Recommendation.choices,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Skor {self.journal.title} — {self.total_score}/400'
+
+    @property
+    def total_score(self):
+        return self.originality + self.methodology + self.writing_quality + self.relevance
+
+    @property
+    def average_score(self):
+        return self.total_score / 4
 
 
 class JournalLog(models.Model):

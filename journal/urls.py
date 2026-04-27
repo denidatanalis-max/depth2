@@ -7,6 +7,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
 
+    # Public (no login)
+    path('publikasi/', views.public_journals, name='public_journals'),
+    path('publikasi/<int:pk>/', views.public_journal_detail, name='public_journal_detail'),
+
     # Supervisor
     path('journal/create/', views.journal_create, name='journal_create'),
     path('journal/<int:pk>/', views.journal_detail, name='journal_detail'),
@@ -22,4 +26,10 @@ urlpatterns = [
     path('journal/<int:pk>/start-review/', views.admin_start_review, name='admin_start_review'),
     path('journal/<int:pk>/verify/', views.admin_verify, name='admin_verify'),
     path('journal/<int:pk>/request-revision/', views.admin_request_revision, name='admin_request_revision'),
+
+    # Scoring
+    path('journal/<int:pk>/score/', views.scoring_submit, name='scoring_submit'),
+
+    # Publication
+    path('journal/<int:pk>/publish/', views.publish_journal, name='publish_journal'),
 ]
