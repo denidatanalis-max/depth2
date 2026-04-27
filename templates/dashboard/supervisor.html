@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Supervisor{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4>Dashboard Supervisor</h4>
+        <p class="text-muted mb-0">Selamat datang, {{ user.get_full_name|default:user.username }}
+            {% if profile.manager %}
+            <span class="text-muted">| Manager: <strong>{{ profile.manager.user.get_full_name }}</strong></span>
+            {% endif %}
+        </p>
+    </div>
+    <a href="{% url 'journal_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Buat Jurnal Baru
+    </a>
+</div>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card blue p-3">
+            <div class="text-muted small">Total Jurnal</div>
+            <h3 class="mb-0">{{ journals.count }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card orange p-3">
+            <div class="text-muted small">Menunggu Approval</div>
+            <h3 class="mb-0">{{ journals|dictsort:"status"|length }}</h3>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card green p-3">
+            <div class="text-muted small">Diverifikasi</div>
+            {% with verified=0 %}
+            <h3 class="mb-0">-</h3>
+            {% endwith %}
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card red p-3">
+            <div class="text-muted small">Perlu Revisi</div>
+            <h3 class="mb-0">-</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Journal List -->
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-journal-text"></i> Jurnal Saya</h5>
+    </div>
+    <div class="card-body p-0">
+        {% if journals %}
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Judul</th>
+                    <th>Status</th>
+                    <th>Revisi</th>
+                    <th>Terakhir Diubah</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in journals %}
+                <tr>
+                    <td>
+                        <a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none fw-medium">
+                            {{ j.title }}
+                        </a>
+                    </td>
+                    <td><span class="badge bg-{{ j.status_badge_class }} badge-status">{{ j.get_status_display }}</span></td>
+                    <td>{{ j.revision_count }}</td>
+                    <td class="text-muted small">{{ j.updated_at|date:"d M Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Lihat
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-journal-x" style="font-size: 3rem;"></i>
+            <p class="mt-2">Belum ada jurnal. Mulai buat jurnal pertama Anda!</p>
+            <a href="{% url 'journal_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Buat Jurnal Baru
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

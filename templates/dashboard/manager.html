@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Manager{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h4>Dashboard Manager</h4>
+    <p class="text-muted mb-0">Selamat datang, {{ user.get_full_name|default:user.username }} | {{ supervisor_count }} Supervisor di bawah Anda</p>
+</div>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card stat-card orange p-3">
+            <div class="text-muted small">Menunggu Approval Anda</div>
+            <h3 class="mb-0">{{ pending.count }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card blue p-3">
+            <div class="text-muted small">Total Jurnal Supervisor</div>
+            <h3 class="mb-0">{{ all_journals.count }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card stat-card green p-3">
+            <div class="text-muted small">Jumlah Supervisor</div>
+            <h3 class="mb-0">{{ supervisor_count }}</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Approval -->
+{% if pending %}
+<div class="card mb-4">
+    <div class="card-header bg-warning bg-opacity-10">
+        <h5 class="mb-0 text-warning"><i class="bi bi-hourglass-split"></i> Menunggu Persetujuan Anda</h5>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Diajukan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in pending %}
+                <tr>
+                    <td><a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none fw-medium">{{ j.title }}</a></td>
+                    <td>{{ j.author.user.get_full_name }}</td>
+                    <td class="text-muted small">{{ j.updated_at|date:"d M Y H:i" }}</td>
+                    <td>
+                        <a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye"></i> Review
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- All Journals -->
+<div class="card">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-journal-text"></i> Semua Jurnal Supervisor</h5>
+    </div>
+    <div class="card-body p-0">
+        {% if all_journals %}
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Status</th>
+                    <th>Revisi</th>
+                    <th>Terakhir Diubah</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in all_journals %}
+                <tr>
+                    <td><a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none">{{ j.title }}</a></td>
+                    <td>{{ j.author.user.get_full_name }}</td>
+                    <td><span class="badge bg-{{ j.status_badge_class }}">{{ j.get_status_display }}</span></td>
+                    <td>{{ j.revision_count }}</td>
+                    <td class="text-muted small">{{ j.updated_at|date:"d M Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <p>Belum ada jurnal yang diajukan oleh supervisor Anda.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
