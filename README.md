@@ -62,23 +62,6 @@ python manage.py runserver
 
 Buka browser: http://127.0.0.1:8000/
 
-## Akun Demo
-
-Password semua: `demo1234`
-
-| Username | Role | Keterangan |
-|----------|------|------------|
-| `supervisor1` | Supervisor (Penulis) | Bawahan Manager 1 |
-| `supervisor2` | Supervisor (Penulis) | Bawahan Manager 1 |
-| `supervisor3` | Supervisor (Penulis) | Bawahan Manager 1 |
-| `supervisor4` | Supervisor (Penulis) | Bawahan Manager 2 |
-| `supervisor5` | Supervisor (Penulis) | Bawahan Manager 2 |
-| `manager1` | Manager (Approver) | Budi Santoso |
-| `manager2` | Manager (Approver) | Siti Rahma |
-| `admin1` | Admin (Helpdesk) | Yuni Astuti |
-| `scoring1` | Scoring (Penilai) | Prof. Reviewer |
-| `superadmin` | Super Admin | Akses ke Django Admin Panel |
-
 ## Hierarki
 
 ```
