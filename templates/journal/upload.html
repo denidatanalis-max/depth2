@@ -1,26 +1,97 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 {% block title %}Upload Jurnal{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
-            <div class="card-header bg-white">
+            <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-upload"></i> Upload File Jurnal (Step 03)</h5>
             </div>
             <div class="card-body">
-                <div class="alert alert-info small">
-                    <i class="bi bi-info-circle"></i>
-                    Jurnal <strong>"{{ journal.title }}"</strong> telah disetujui Manager. Silakan upload file PDF jurnal Anda.
+
+                <div class="alert alert-success small mb-4">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Jurnal telah disetujui Leader. Silakan periksa ringkasan dan upload file PDF jurnal Anda.
                 </div>
+
+                <!-- Judul: read-only -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">
+                        <i class="bi bi-card-heading"></i> Judul Jurnal
+                        <span class="ms-2 badge" style="background:rgba(139,0,0,0.5);border:1px solid rgba(212,175,55,0.35);color:#d4af37;font-size:0.7rem;font-weight:500;">
+                            <i class="bi bi-lock-fill"></i> Tidak dapat diubah
+                        </span>
+                    </label>
+                    <div class="form-control" style="background:rgba(5,0,0,0.4);border-color:rgba(212,175,55,0.18);color:rgba(255,248,238,0.6);cursor:not-allowed;">
+                        {{ journal.title }}
+                    </div>
+                </div>
+
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form|crispy }}
+
+                    <!-- Ringkasan: editable -->
+                    <div class="mb-1">
+                        <label class="form-label fw-semibold" for="id_abstract">
+                            <i class="bi bi-card-text"></i> Ringkasan
+                            <span class="ms-2 badge" style="background:rgba(0,60,20,0.4);border:1px solid rgba(77,255,140,0.3);color:#a8ffcc;font-size:0.7rem;font-weight:500;">
+                                <i class="bi bi-pencil-fill"></i> Dapat diperbarui
+                            </span>
+                        </label>
+                        <textarea name="abstract" id="id_abstract" rows="5"
+                            class="form-control"
+                            placeholder="Ringkasan dapat diperbarui sebelum upload...">{{ form.abstract.value }}</textarea>
+                        {% if form.abstract.errors %}
+                        <div class="text-danger small mt-1">{{ form.abstract.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Notifikasi timestamp jika ringkasan pernah diedit -->
+                    {% if journal.abstract_updated_at %}
+                    <div class="mb-3">
+                        <small style="color:rgba(255,220,170,0.5);">
+                            <i class="bi bi-clock-history"></i>
+                            Ringkasan terakhir diperbarui:
+                            <strong style="color:rgba(212,175,55,0.75);">
+                                {{ journal.abstract_updated_at|date:"d M Y" }} : {{ journal.abstract_updated_at|date:"H:i" }}
+                            </strong>
+                        </small>
+                    </div>
+                    {% else %}
+                    <div class="mb-3">
+                        <small style="color:rgba(255,220,170,0.3);">
+                            <i class="bi bi-info-circle"></i> Ringkasan belum pernah diperbarui setelah persetujuan.
+                        </small>
+                    </div>
+                    {% endif %}
+
+                    <!-- Upload PDF -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-file-earmark-pdf-fill" style="color:#ff6666;"></i> File Jurnal (PDF)
+                        </label>
+                        <input type="file" name="file" id="id_file" accept=".pdf"
+                            class="form-control" required>
+                        {% if form.file.errors %}
+                        <div class="text-danger small mt-1">{{ form.file.errors }}</div>
+                        {% endif %}
+                        <div class="mt-1">
+                            <small style="color:rgba(255,220,170,0.4);">
+                                <i class="bi bi-info-circle"></i> Hanya file PDF yang diperbolehkan.
+                            </small>
+                        </div>
+                    </div>
+
                     <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-upload"></i> Upload File</button>
-                        <a href="{% url 'journal_detail' journal.pk %}" class="btn btn-secondary">Batal</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload"></i> Upload & Kirim ke Admin
+                        </button>
+                        <a href="{% url 'journal_detail' journal.pk %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Batal
+                        </a>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

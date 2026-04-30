@@ -5,10 +5,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Role(models.TextChoices):
-    SUPERVISOR = 'supervisor', 'Supervisor (Penulis)'
-    MANAGER = 'manager', 'Manager (Approver)'
+    SUPERVISOR = 'supervisor', 'Writer (Penulis)'
+    MANAGER = 'manager', 'Leader (Approver)'
     ADMIN = 'admin', 'Admin (Helpdesk)'
     SCORING = 'scoring', 'Scoring (Penilai)'
+    RECOMMENDATION = 'recommendation', 'Recommendation (Tim Rekomendasi)'
     SUPERADMIN = 'superadmin', 'Super Admin'
 
 
@@ -19,6 +20,7 @@ class UserProfile(models.Model):
         related_name='profile',
     )
     role = models.CharField(max_length=20, choices=Role.choices)
+    session_key = models.CharField(max_length=40, blank=True, null=True)
     manager = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -26,7 +28,7 @@ class UserProfile(models.Model):
         blank=True,
         related_name='supervisors',
         limit_choices_to={'role': Role.MANAGER},
-        help_text='Atasan langsung (hanya untuk Supervisor)',
+        help_text='Atasan langsung (hanya untuk Writer)',
     )
 
     class Meta:
@@ -52,21 +54,26 @@ class UserProfile(models.Model):
         return self.role == Role.SCORING
 
     @property
+    def is_recommendation(self):
+        return self.role == Role.RECOMMENDATION
+
+    @property
     def is_superadmin(self):
         return self.role == Role.SUPERADMIN
 
 
 class JournalStatus(models.TextChoices):
     DRAFT = 'draft', 'Draft'
-    SUBMITTED = 'submitted', 'Diajukan ke Manager'
-    APPROVED = 'approved', 'Disetujui Manager'
-    REJECTED = 'rejected', 'Ditolak Manager'
-    UPLOADED = 'uploaded', 'Jurnal Diupload'
-    UNDER_REVIEW = 'under_review', 'Sedang Diverifikasi Admin'
+    SUBMITTED = 'submitted', 'Diajukan ke Leader'
+    APPROVED = 'approved', 'Disetujui Leader'
+    REJECTED = 'rejected', 'Ditolak Leader'
+    UPLOADED = 'uploaded', 'Menunggu Review File Leader'
+    UNDER_REVIEW = 'under_review', 'Dikumpulkan Admin'
     REVISION_NEEDED = 'revision_needed', 'Perlu Revisi'
     VERIFIED = 'verified', 'Diverifikasi Admin'
     SCORING = 'scoring', 'Sedang Dinilai'
     SCORE_REVISION = 'score_revision', 'Revisi dari Scoring'
+    UNDER_RECOMMENDATION = 'under_recommendation', 'Menunggu Tim Rekomendasi'
     RECOMMENDED = 'recommended', 'Direkomendasikan'
     NOT_RECOMMENDED = 'not_recommended', 'Tidak Direkomendasikan'
     PUBLISHED = 'published', 'Dipublikasikan'
@@ -94,6 +101,7 @@ class Journal(models.Model):
         null=True,
     )
     revision_count = models.PositiveIntegerField('Jumlah Revisi', default=0)
+    abstract_updated_at = models.DateTimeField('Ringkasan Terakhir Diubah', null=True, blank=True)
     published_at = models.DateTimeField('Tanggal Publikasi', null=True, blank=True)
     created_at = models.DateTimeField('Dibuat', auto_now_add=True)
     updated_at = models.DateTimeField('Diperbarui', auto_now=True)
@@ -119,6 +127,7 @@ class Journal(models.Model):
             JournalStatus.VERIFIED: 'success',
             JournalStatus.SCORING: 'warning',
             JournalStatus.SCORE_REVISION: 'danger',
+            JournalStatus.UNDER_RECOMMENDATION: 'warning',
             JournalStatus.RECOMMENDED: 'success',
             JournalStatus.NOT_RECOMMENDED: 'danger',
             JournalStatus.PUBLISHED: 'dark',

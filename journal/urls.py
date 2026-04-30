@@ -18,17 +18,22 @@ urlpatterns = [
     path('journal/<int:pk>/submit/', views.journal_submit, name='journal_submit'),
     path('journal/<int:pk>/upload/', views.journal_upload, name='journal_upload'),
 
-    # Manager
+    # Manager — review judul/ringkasan
     path('journal/<int:pk>/approve/', views.manager_approve, name='manager_approve'),
     path('journal/<int:pk>/reject/', views.manager_reject, name='manager_reject'),
+    # Manager — review file PDF
+    path('journal/<int:pk>/approve-file/', views.manager_approve_file, name='manager_approve_file'),
+    path('journal/<int:pk>/reject-file/', views.manager_reject_file, name='manager_reject_file'),
 
     # Admin
-    path('journal/<int:pk>/start-review/', views.admin_start_review, name='admin_start_review'),
-    path('journal/<int:pk>/verify/', views.admin_verify, name='admin_verify'),
-    path('journal/<int:pk>/request-revision/', views.admin_request_revision, name='admin_request_revision'),
+    path('journal/<int:pk>/collect/', views.admin_collect, name='admin_collect'),
 
     # Scoring
     path('journal/<int:pk>/score/', views.scoring_submit, name='scoring_submit'),
+
+    # Recommendation
+    path('journal/<int:pk>/recommend-approve/', views.recommendation_approve, name='recommendation_approve'),
+    path('journal/<int:pk>/recommend-reject/', views.recommendation_reject, name='recommendation_reject'),
 
     # Publication
     path('journal/<int:pk>/publish/', views.publish_journal, name='publish_journal'),

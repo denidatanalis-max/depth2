@@ -24,6 +24,25 @@ class JournalUploadForm(forms.ModelForm):
         return f
 
 
+class JournalUploadWithAbstractForm(forms.ModelForm):
+    class Meta:
+        model = Journal
+        fields = ['abstract', 'file']
+        widgets = {
+            'abstract': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Ringkasan dapat diperbarui sebelum upload...'}),
+        }
+        labels = {
+            'abstract': 'Ringkasan',
+            'file': 'File Jurnal (PDF)',
+        }
+
+    def clean_file(self):
+        f = self.cleaned_data.get('file')
+        if f and not f.name.lower().endswith('.pdf'):
+            raise forms.ValidationError('Hanya file PDF yang diperbolehkan.')
+        return f
+
+
 class ReviewForm(forms.Form):
     note = forms.CharField(
         label='Catatan',

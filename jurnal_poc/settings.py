@@ -33,7 +33,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'journal.middleware.SingleSessionMiddleware',
 ]
+
+# Session: auto logout 30 menit tidak aktif
+SESSION_COOKIE_AGE = 30 * 60  # 1800 detik
+SESSION_SAVE_EVERY_REQUEST = True  # reset timer setiap ada request
 
 ROOT_URLCONF = 'jurnal_poc.urls'
 
