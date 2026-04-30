@@ -3,6 +3,6 @@
 {% block content %}
 <div class="text-center py-5">
     <h4>Selamat datang, {{ user.get_full_name|default:user.username }}</h4>
-    <p class="text-muted">Role: {{ profile.get_role_display }}</p>
+    <p class="text-muted">Jabatan: {{ profile.get_role_display }}</p>
 </div>
 {% endblock %}
