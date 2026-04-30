@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 16px; background: #3a0a00; font-family: 'Segoe UI', sans-serif; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat-card {
+    background: rgba(90,22,5,0.70);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    width: 130px;
+    border-left-width: 4px !important;
+  }
+  .stat-label { color: rgba(255,220,170,0.7); font-size: 10px; margin-bottom: 6px; }
+  .stat-val { color: #fff8ee; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .stat-hex { color: rgba(255,220,170,0.45); font-size: 9px; }
+</style>
+</head>
+<body>
+<div class="row">
+  <div class="stat-card" style="border-left-color:#4da6ff;">
+    <div class="stat-label">Total Jurnal</div>
+    <div class="stat-val">24</div>
+    <div class="stat-hex">#4da6ff — Blue</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#4dffaa;">
+    <div class="stat-label">Diverifikasi</div>
+    <div class="stat-val">11</div>
+    <div class="stat-hex">#4dffaa — Green</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#ffb84d;">
+    <div class="stat-label">Menunggu</div>
+    <div class="stat-val">7</div>
+    <div class="stat-hex">#ffb84d — Orange</div>
+  </div>
+  <div class="stat-card" style="border-left-color:#ff6666;">
+    <div class="stat-label">Perlu Revisi</div>
+    <div class="stat-val">3</div>
+    <div class="stat-hex">#ff6666 — Red</div>
+  </div>
+</div>
+</body>
+</html>

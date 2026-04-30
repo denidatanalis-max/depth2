@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 16px 20px; background: #3a0a00; font-family: 'Segoe UI', sans-serif; }
+  .row { display: flex; align-items: center; gap: 24px; margin-bottom: 12px; }
+  .label { color: rgba(255,220,170,0.55); font-size: 9px; width: 70px; flex-shrink: 0; }
+  .box { background: rgba(160,35,5,0.55); border: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; justify-content: center; color: rgba(255,220,170,0.65); font-size: 9px; width: 52px; height: 36px; }
+  .sp { background: rgba(160,35,5,0.55); border: 1px solid rgba(212,175,55,0.25); height: 12px; }
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="label">Border Radius</div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <div class="box" style="border-radius:0;">0</div>
+      <div class="box" style="border-radius:8px;">8px</div>
+      <div class="box" style="border-radius:10px;">10px</div>
+      <div class="box" style="border-radius:12px;">12px</div>
+      <div class="box" style="border-radius:20px;">20px</div>
+      <div class="box" style="border-radius:50%; width:36px; height:36px;">50%</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">Spacing Scale</div>
+    <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+      <div style="display:flex; align-items:center; gap:8px;"><div class="sp" style="width:4px;"></div><span style="color:rgba(255,220,170,0.55); font-size:9px;">4px</span></div>
+      <div style="display:flex; align-items:center; gap:8px;"><div class="sp" style="width:8px;"></div><span style="color:rgba(255,220,170,0.55); font-size:9px;">8px</span></div>
+      <div style="display:flex; align-items:center; gap:8px;"><div class="sp" style="width:12px;"></div><span style="color:rgba(255,220,170,0.55); font-size:9px;">12px</span></div>
+      <div style="display:flex; align-items:center; gap:8px;"><div class="sp" style="width:20px;"></div><span style="color:rgba(255,220,170,0.55); font-size:9px;">20px</span></div>
+      <div style="display:flex; align-items:center; gap:8px;"><div class="sp" style="width:28px;"></div><span style="color:rgba(255,220,170,0.55); font-size:9px;">28px</span></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="label">Borders</div>
+    <div style="display:flex; gap:10px;">
+      <div style="width:60px; height:28px; border:1px solid rgba(212,175,55,0.3); border-radius:6px; display:flex; align-items:center; justify-content:center; color:rgba(255,220,170,0.55); font-size:9px;">30% gold</div>
+      <div style="width:60px; height:28px; border:1px solid rgba(212,175,55,0.45); border-radius:6px; display:flex; align-items:center; justify-content:center; color:rgba(255,220,170,0.55); font-size:9px;">45% gold</div>
+      <div style="width:60px; height:28px; border-left:3px solid #d4af37; padding-left:6px; display:flex; align-items:center; color:#d4af37; font-size:9px; font-weight:700;">Active</div>
+    </div>
+  </div>
+</body>
+</html>

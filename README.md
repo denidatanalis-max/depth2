@@ -1,302 +1,217 @@
-# Depth Culture — Sistem Manajemen Jurnal Perusahaan
+# Depth Culture Design System
 
-Website lengkap untuk pengelolaan dan publikasi Jurnal Perusahaan internal.
+## Overview
 
-## Fitur
+**Depth Culture** is an Indonesian company's internal web application for managing and publishing corporate journals (Jurnal Perusahaan). It is a multi-role workflow platform built with Django + Bootstrap 5, featuring a rich dark maroon/gold visual identity.
 
-- **Workflow Multi-Tahap**: Writer → Manager (2x review) → Admin → Scoring → Tim Rekomendasi → Publikasi
-- **Hierarki User**: Writer → Manager → Admin → Scoring → Tim Rekomendasi (+ Super Admin)
-- **Review Dua Kali oleh Manager**: Manager mereview judul/ringkasan, lalu mereview file PDF secara terpisah
-- **Scoring & Penilaian**: 4 kriteria (Orisinalitas, Metodologi, Kualitas Penulisan, Relevansi), skor 1–100
-- **Tim Rekomendasi**: Grup user multi-anggota yang memberi keputusan akhir sebelum publikasi
-- **Admin Bisa Bypass**: Admin dapat mempublikasikan langsung tanpa menunggu Tim Rekomendasi
-- **Edit Terkontrol**: Judul terkunci setelah disetujui Manager, ringkasan boleh diedit saat upload (dengan timestamp)
-- **Halaman Publik**: Jurnal yang sudah dipublikasikan bisa dibaca tanpa login (`/publikasi/`)
-- **Data Isolation**: Writer hanya bisa melihat jurnal miliknya sendiri
-- **Dashboard per Role**: Setiap role punya tampilan dan aksi berbeda
-- **Activity Log**: Riwayat lengkap setiap aksi pada jurnal
-- **Revision Loop**: Jurnal bisa dikembalikan untuk revisi di berbagai tahap
+**Source:** GitHub repository `denidatanalis-max/depth2` (https://github.com/denidatanalis-max/depth2)
 
-## Persyaratan
-
-- Python 3.11
-- pip
-
-## Cara Install & Jalankan
-
-### 1. Masuk ke folder project
-
-```bash
-cd depth2
-```
-
-### 2. Buat virtual environment
-
-```bash
-python3.11 -m venv venv
-source venv/bin/activate    # Linux/Mac
-# atau
-venv\Scripts\activate       # Windows
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Jalankan migrasi database
-
-```bash
-python manage.py migrate
-```
-
-### 5. Buat data demo (user & hierarchy)
-
-```bash
-python manage.py seed_demo
-```
-
-### 6. Jalankan server
-
-```bash
-python manage.py runserver
-```
-
-Buka browser: http://127.0.0.1:8000/
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-## Hierarki
-=======
->>>>>>> 76c0dd3
----
-
-## Akun Demo
-
-Password semua akun: `demo1234`
-
-| Username | Role | Nama | Keterangan |
-|----------|------|------|------------|
-| `supervisor1` | Writer (Penulis) | Andi Pratama | Bawahan Manager 1 |
-| `supervisor2` | Writer (Penulis) | Dewi Lestari | Bawahan Manager 1 |
-| `supervisor3` | Writer (Penulis) | Fajar Nugroho | Bawahan Manager 1 |
-| `supervisor4` | Writer (Penulis) | Rina Wijaya | Bawahan Manager 2 |
-| `supervisor5` | Writer (Penulis) | Hadi Kurniawan | Bawahan Manager 2 |
-| `manager1` | Leader (Approver) | Budi Santoso | — |
-| `manager2` | Leader (Approver) | Siti Rahma | — |
-| `admin1` | Admin | Yuni Astuti | Collect & Publikasi |
-| `scoring1` | Scoring (Penilai) | Prof. Reviewer | — |
-| `recom1` | Tim Rekomendasi | Dr. Hartono | — |
-| `recom2` | Tim Rekomendasi | Dr. Melinda | — |
-| `superadmin` | Super Admin | — | Akses ke Django Admin Panel |
-
----
-
-## Hierarki User
-<<<<<<< HEAD
-=======
->>>>>>> 661d5a6 (30042026)
->>>>>>> 76c0dd3
-
-```
-Manager 1 (Budi Santoso) — manager1
-├── Supervisor 1 (Andi Pratama)  — supervisor1
-├── Supervisor 2 (Dewi Lestari)  — supervisor2
-└── Supervisor 3 (Fajar Nugroho) — supervisor3
-
-Manager 2 (Siti Rahma) — manager2
-├── Supervisor 4 (Rina Wijaya)   — supervisor4
-└── Supervisor 5 (Hadi Kurniawan)— supervisor5
-
-Admin (Yuni Astuti)     — admin1
-Scoring (Prof. Reviewer)— scoring1
-Tim Rekomendasi         — recom1, recom2
-Super Admin             — superadmin
-```
-
----
-
-## Alur Workflow
-
-```
-Step 01 — Writer membuat jurnal
-          Isi: Judul + Ringkasan (belum ada PDF)
-    ↓
-Step 02 — Writer mengajukan ke Manager
-          Manager mereview judul & ringkasan
-          ├─ [Tolak] → kembali ke Writer untuk revisi judul/ringkasan
-          └─ [Setuju] → kembali ke Writer untuk upload PDF
-    ↓
-Step 03 — Writer upload file PDF
-          Judul terkunci (tidak bisa diedit)
-          Ringkasan boleh diedit (dicatat timestamp perubahannya)
-          Setelah upload → dikirim ke Manager untuk review file
-    ↓
-Step 04 — Manager mereview file PDF
-          ├─ [Tolak file] → kembali ke Writer untuk upload ulang
-          └─ [Setuju file] → dikirim ke Admin
-    ↓
-Step 05 — Admin mengumpulkan jurnal
-          Admin melihat file PDF
-          Tombol: "Kirim ke Scoring"
-    ↓
-Step 06 — Scoring memberikan penilaian
-          4 kriteria × skor 1–100:
-          • Orisinalitas
-          • Metodologi
-          • Kualitas Penulisan
-          • Relevansi
-          Hasil Scoring:
-          ├─ [Perlu Revisi] → kembali ke Writer (revisi ulang dari Step 02)
-          ├─ [Tidak Layak]  → NOT_RECOMMENDED (jurnal ditutup)
-          └─ [Layak]        → dikirim ke Tim Rekomendasi
-    ↓
-Step 07 — Tim Rekomendasi memberikan keputusan akhir
-          (Dapat diisi oleh lebih dari 1 anggota tim)
-          ├─ [Tidak Direkomendasikan] → NOT_RECOMMENDED
-          └─ [Setuju / Rekomendasikan] → RECOMMENDED → Admin dapat publikasi
-    ↓
-Step 08 — Admin mempublikasikan jurnal
-          Pilihan Admin:
-          • Publikasikan setelah Tim Rekomendasi setuju (RECOMMENDED)
-          • Publikasikan langsung tanpa menunggu Tim Rekomendasi (bypass)
-    ↓
-Step 09 — Jurnal PUBLISHED
-          Dapat diakses publik di /publikasi/<id>/
-```
-
----
-
-## Aturan per Role
-
-| Role | Yang Bisa Dilakukan |
-|------|---------------------|
-| **Writer (Supervisor)** | Buat jurnal, edit judul+ringkasan (saat draft/revisi), upload PDF (saat approved), ajukan ke Manager |
-| **Manager (Leader)** | Review & approve/tolak judul+ringkasan, review & approve/tolak file PDF |
-| **Admin** | Kirim jurnal ke Scoring, publikasikan jurnal (bisa bypass Tim Rekomendasi) |
-| **Scoring** | Beri nilai 4 kriteria, beri rekomendasi (layak/revisi/tidak layak) |
-| **Tim Rekomendasi** | Review hasil Scoring, setujui atau tolak untuk publikasi |
-| **Super Admin** | Publikasikan jurnal + akses Django Admin Panel (`/admin/`) |
-
----
-
-## Status Jurnal
-
-| Status | Keterangan |
-|--------|------------|
-| `draft` | Baru dibuat, belum diajukan |
-| `submitted` | Diajukan ke Manager (menunggu review judul/ringkasan) |
-| `approved` | Manager setuju → Writer siap upload PDF |
-| `rejected` | Manager tolak → Writer revisi judul/ringkasan |
-| `uploaded` | PDF diupload → menunggu review file oleh Manager |
-| `under_review` | Manager setuju file → dikumpulkan Admin, siap ke Scoring |
-| `scoring` | Sedang dinilai oleh Scoring |
-| `score_revision` | Scoring minta revisi → Writer revisi ulang |
-| `under_recommendation` | Menunggu keputusan Tim Rekomendasi |
-| `recommended` | Tim Rekomendasi setuju → siap dipublikasikan |
-| `not_recommended` | Ditolak (oleh Manager, Scoring, atau Tim Rekomendasi) |
-| `published` | Dipublikasikan, bisa diakses publik |
-
----
-
-## URL Penting
-
-| URL | Keterangan |
-|-----|------------|
-| `/` atau `/dashboard/` | Dashboard (tampilan sesuai role) |
-| `/login/` | Halaman login |
-| `/publikasi/` | Halaman publik — daftar jurnal yang sudah terbit |
-| `/publikasi/<id>/` | Detail jurnal publik beserta skor |
-| `/journal/create/` | Buat jurnal baru (Writer) |
-| `/journal/<id>/` | Detail jurnal (internal, aksi berbeda per role) |
-| `/journal/<id>/upload/` | Upload PDF + edit ringkasan (Writer, setelah approved) |
-| `/admin/` | Django Admin Panel (superadmin) |
-
----
-
-## Struktur Project
-
-```
-depth2/
-├── jurnal_poc/              # Settings & URL config
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── journal/                 # App utama
-│   ├── models.py            # UserProfile, Journal, JournalScore, JournalLog
-│   ├── views.py             # Views per role + public views
-│   ├── forms.py             # Form jurnal, upload, review, scoring
-│   ├── urls.py              # URL routing
-│   ├── admin.py             # Django admin config
-│   └── management/
-│       └── commands/
-│           └── seed_demo.py # Seed data demo (semua role)
-├── templates/
-│   ├── base.html            # Layout utama + sidebar (tema merah marun)
-│   ├── login.html           # Halaman login
-│   ├── dashboard/
-│   │   ├── supervisor.html  # Dashboard Writer
-│   │   ├── manager.html     # Dashboard Manager
-│   │   ├── admin.html       # Dashboard Admin
-│   │   ├── scoring.html     # Dashboard Scoring
-│   │   ├── recommendation.html  # Dashboard Tim Rekomendasi
-│   │   └── superadmin.html  # Dashboard Super Admin
-│   ├── journal/
-│   │   ├── create.html      # Buat jurnal (judul + ringkasan)
-│   │   ├── detail.html      # Detail jurnal + aksi per role
-│   │   ├── edit.html        # Edit jurnal (saat draft/revisi)
-│   │   └── upload.html      # Upload PDF + edit ringkasan
-│   └── public/
-│       ├── journal_list.html
-│       └── journal_detail.html
-├── static/
-│   └── img/
-│       └── background_login2.png  # Background tema
-├── media/                   # File PDF yang diupload
-├── requirements.txt
-├── passenger_wsgi.py        # WSGI untuk cPanel
-├── manage.py
-└── README.md
-```
-
----
-
-## Deploy ke cPanel
-
-1. Upload semua file ke cPanel
-2. Setup Python App di cPanel → pilih Python 3.11
-3. Set Application root ke folder project
-4. Set Application URL
-5. Set Application startup file: `passenger_wsgi.py`
-6. Install requirements: `pip install -r requirements.txt`
-7. Jalankan:
-   ```bash
-   python manage.py migrate
-   python manage.py seed_demo
-   python manage.py collectstatic --noinput
-   ```
-
-### File `passenger_wsgi.py` untuk cPanel
-
-```python
-import os
-import sys
-
-sys.path.insert(0, os.path.dirname(__file__))
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jurnal_poc.settings')
-
-from django.core.wsgi import get_wsgi_application
-application = get_wsgi_application()
-```
+### Product Summary
+A single web product: an internal journal management system where employees submit research journals through a multi-stage approval workflow (Writer → Manager → Admin → Scoring → Tim Rekomendasi → Publication). Public-facing journal listing at `/publikasi/`.
 
 ---
 
 ## Tech Stack
-
-- Python 3.11
-- Django 4.2 LTS
-- Bootstrap 5 + Bootstrap Icons
-- SQLite (bisa upgrade ke MySQL/PostgreSQL)
+- Python 3.11 / Django 4.2 LTS
+- Bootstrap 5.3.3 + Bootstrap Icons 1.11.3
+- SQLite (deployable to MySQL/PostgreSQL)
 - django-crispy-forms + crispy-bootstrap5
+- Deployed via cPanel (passenger_wsgi.py)
+
+---
+
+## User Roles
+| Role | Indonesian Name | Responsibility |
+|------|----------------|----------------|
+| Writer | Supervisor / Penulis | Create & submit journals |
+| Manager | Leader / Approver | Review title, abstract, PDF |
+| Admin | Admin | Send to scoring, publish |
+| Scoring | Penilai | Score on 4 criteria |
+| Tim Rekomendasi | — | Final recommendation before publish |
+| Super Admin | Super Admin | Full access + Django admin |
+
+---
+
+## CONTENT FUNDAMENTALS
+
+### Language
+All copy is in **Bahasa Indonesia**. Labels, navigation, button text, and system messages are Indonesian.
+
+### Tone & Voice
+- Formal-professional. No casual slang.
+- System messages are direct and action-oriented: "Kirim ke Scoring", "Buat Jurnal Baru".
+- Role-based greetings: "Selamat datang, [Nama]".
+- Error/status messages are clear and specific: "Jurnal dikembalikan untuk revisi".
+
+### Casing
+- Title Case for page headings and brand name.
+- Sentence case for labels and body copy.
+- ALL CAPS for form labels (login screen): `USERNAME`, `PASSWORD`.
+
+### Pronouns / POV
+- Second person implied (no explicit "Anda" in most UI labels).
+- Greeting uses full name: "Selamat datang, Budi Santoso".
+
+### Emoji
+- **Not used** anywhere in the UI. Bootstrap Icons exclusively.
+
+### Example Copy Patterns
+- Nav: "Dashboard", "Publikasi", "Buat Jurnal Baru", "Logout"
+- Actions: "Ajukan ke Manager", "Upload PDF", "Kirim ke Scoring", "Publikasikan"
+- States: "Menunggu Approval", "Perlu Revisi", "Diverifikasi"
+- Empty state: "Belum ada jurnal. Mulai buat jurnal pertama Anda!"
+
+---
+
+## VISUAL FOUNDATIONS
+
+### Color Palette
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--gold` | `#d4af37` | Primary accent — brand color, active states, links, card titles |
+| `--gold-hover` | `#f0c84a` | Gold on hover |
+| `--gold-dim` | `rgba(212, 175, 55, 0.3)` | Borders, dividers |
+| `--red-primary` | `#7a0000` → `#b80000` | Button gradient, active sidebar bg |
+| `--red-bright` | `#8b0000` / `#cc0000` | Hover states |
+| `--bg-dark` | `rgba(5, 0, 0, 0.45)` | Full-page overlay on background image |
+| `--bg-card` | `rgba(25, 5, 0, 0.50)` | Card background |
+| `--bg-card-header` | `rgba(120, 10, 0, 0.50)` | Card header |
+| `--bg-sidebar` | `rgba(60,0,0,0.68)` → `rgba(20,0,0,0.75)` | Sidebar gradient |
+| `--text-primary` | `#fff8ee` | Body text — warm off-white |
+| `--text-muted` | `rgba(255, 220, 170, 0.70)` | Muted/secondary text |
+| `--text-warm` | `rgba(255, 220, 170, 0.85)` | Form labels |
+| `--green-success` | `#004d1a` → `#006622` | Success button |
+| `--stat-blue` | `#4da6ff` | Stat card accent |
+| `--stat-green` | `#4dffaa` | Stat card accent |
+| `--stat-orange` | `#ffb84d` | Stat card accent |
+| `--stat-red` | `#ff6666` | Stat card accent |
+
+### Background
+- Full-bleed **photo background** (`background_login2.png`) — appears to be a dark atmospheric/nature image.
+- Dark overlay `rgba(5, 0, 0, 0.45)` + `background-attachment: fixed`.
+- All UI panels are semi-transparent with `backdrop-filter: blur(2–8px)`.
+
+### Typography
+- **Font Family**: `'Segoe UI', sans-serif` — system font, no custom web fonts.
+- **Brand name**: Bold, letter-spacing 0.5–1px, `#d4af37` gold color.
+- **Page titles**: `.page-title` — bold, gold, letter-spacing 0.5px.
+- **Body**: `#fff8ee`, regular weight.
+- **Labels**: 0.875rem, 500 weight, warm cream.
+- **Form labels (login)**: 0.82rem, 600 weight, uppercase, letter-spacing 0.5px.
+- **Small/muted**: 0.75–0.82rem.
+
+### Spacing & Layout
+- Sidebar: fixed 250px width, sticky, full-height.
+- Content padding: `1.75rem`.
+- Card radius: `12px`.
+- Input/button radius: `8px`.
+- Gap between elements: Bootstrap grid (row/col).
+
+### Borders
+- All borders: `rgba(212, 175, 55, 0.25–0.45)` — thin gold, semi-transparent.
+- Cards have double-border effect: outer gold `rgba(212,175,55,0.3)` + inner box-shadow ring `rgba(139,0,0,0.2)`.
+- Active sidebar nav: `border-left: 3px solid #d4af37`.
+
+### Shadows
+- Cards: `0 4px 24px rgba(0,0,0,0.5)` + inner ring `0 0 0 1px rgba(139,0,0,0.2)`.
+- Buttons: `0 3px 14px rgba(120,0,0,0.5)`; hover: `0 5px 18px rgba(160,0,0,0.6)`.
+- Brand icon: `filter: drop-shadow(0 0 10px rgba(212,175,55,0.4))`.
+
+### Buttons
+- **Primary / Danger**: Red gradient `#7a0000 → #b80000`, gold border, `#ffeebb` text.
+- **Hover**: lighter gradient `#9a0000 → #cc0000`, brighter gold border, `translateY(-1px)`.
+- **Active**: `translateY(0)`.
+- **Secondary**: dark red semi-transparent bg.
+- **Success**: deep green gradient.
+- **Outline**: transparent bg, gold border + text; hover fills with dark red.
+
+### Animations & Transitions
+- Buttons: `transition: all 0.2s ease` with `translateY(-1px)` lift on hover.
+- Nav links: `transition: all 0.2s ease`.
+- No page transitions, no bounce, no JS animations.
+- Focus ring: `0 0 0 3px rgba(212,175,55,0.15)` gold glow.
+
+### Corner Radii
+- Cards: `12px`
+- Inputs, buttons, alerts: `8px–10px`
+- Sidebar: no rounding (edge-to-edge)
+- Stat card circles/badges: `50%`
+
+### Scrollbar
+- Custom: 6px wide, dark red thumb `rgba(139,0,0,0.6)`, near-black track.
+
+### Cards
+- Semi-transparent dark bg + gold border + backdrop blur.
+- Card header: darker red tint, gold text.
+- Stat cards: left border `4px solid` in accent color (blue/green/orange/red).
+
+### Imagery
+- One background photo (atmospheric, dark). No illustration assets.
+- No brand logos or custom illustrations found.
+- Icon-only identity via Bootstrap Icons.
+
+### Color vibe
+- Warm, cinematic dark. Maroon/burgundy + antique gold. Very formal, executive feeling.
+
+---
+
+## ICONOGRAPHY
+
+### Icon System
+- **Bootstrap Icons** (v1.11.3) via CDN: `https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css`
+- Usage: `<i class="bi bi-{name}"></i>` inline HTML.
+- **No custom icon font, no SVG sprite, no PNG icons.**
+- Icons are used as decorative prefixes on nav items, buttons, headings, and empty states.
+
+### Key Icons Used
+| Icon class | Usage |
+|------------|-------|
+| `bi-journal-text` | Brand icon / logo substitute |
+| `bi-speedometer2` | Dashboard nav |
+| `bi-globe` | Publikasi nav |
+| `bi-plus-circle` | Create new action |
+| `bi-person-circle` | User identity |
+| `bi-box-arrow-left` | Logout |
+| `bi-box-arrow-in-right` | Login |
+| `bi-eye` | View detail |
+| `bi-pencil-fill` | Writer/edit |
+| `bi-lock-fill` | Password field |
+| `bi-person-fill` | Username field |
+| `bi-journal-x` | Empty state |
+
+### Emoji
+- **Not used** in this product.
+
+### Assets Available
+- `assets/background_login2.png` — Full-bleed dark atmospheric background photo.
+
+---
+
+## File Index
+
+```
+/
+├── README.md                    ← This file
+├── SKILL.md                     ← Agent skill descriptor
+├── colors_and_type.css          ← CSS custom properties for colors + typography
+├── assets/
+│   └── background_login2.png   ← Full-bleed background photo
+├── preview/
+│   ├── colors_primary.html      ← Primary color swatches
+│   ├── colors_semantic.html     ← Semantic / UI color tokens
+│   ├── colors_stat.html         ← Stat accent colors
+│   ├── type_scale.html          ← Typography scale specimen
+│   ├── type_labels.html         ← Label & UI text styles
+│   ├── spacing_tokens.html      ← Spacing & radius tokens
+│   ├── shadows_borders.html     ← Shadow & border system
+│   ├── buttons.html             ← Button variants
+│   ├── badges_alerts.html       ← Badge & alert variants
+│   ├── cards.html               ← Card variants
+│   ├── forms.html               ← Form input styles
+│   ├── sidebar.html             ← Sidebar component
+│   └── stat_cards.html          ← Stat card variants
+└── ui_kits/
+    └── depth_culture/
+        ├── README.md
+        └── index.html           ← Interactive UI kit (login → dashboard → journal detail)
+```

@@ -1,0 +1,291 @@
+/**
+ * Depth Culture Design System
+ * colors_and_type.css
+ *
+ * CSS custom properties for the Depth Culture internal journal management system.
+ * Brand: dark maroon + antique gold, semi-transparent glass panels, full-bleed photo background.
+ * Icon system: Bootstrap Icons (CDN)
+ * Font: Segoe UI (system font)
+ */
+
+:root {
+  /* ─────────────────────────────────────────
+     BRAND COLORS
+  ───────────────────────────────────────── */
+
+  /* Gold accent — primary brand color */
+  --dc-gold:           #d4af37;
+  --dc-gold-hover:     #f0c84a;
+  --dc-gold-dim:       rgba(212, 175, 55, 0.30);
+  --dc-gold-subtle:    rgba(212, 175, 55, 0.15);
+  --dc-gold-faint:     rgba(212, 175, 55, 0.05);
+  --dc-gold-glow:      rgba(212, 175, 55, 0.40);
+
+  /* Red / Maroon — primary action color */
+  --dc-red-dark:       #7a0000;
+  --dc-red-mid:        #8b0000;
+  --dc-red-primary:    #b80000;
+  --dc-red-bright:     #cc0000;
+  --dc-red-vivid:      #a81500;
+
+  /* Button gradients */
+  --dc-btn-grad:       linear-gradient(135deg, #7a0000, #b80000);
+  --dc-btn-grad-hover: linear-gradient(135deg, #9a0000, #cc0000);
+  --dc-btn-grad-green: linear-gradient(135deg, #004d1a, #006622);
+  --dc-btn-grad-green-hover: linear-gradient(135deg, #006622, #008833);
+  --dc-btn-grad-amber: linear-gradient(135deg, #7a4800, #b86b00);
+
+  /* ─────────────────────────────────────────
+     BACKGROUNDS
+  ───────────────────────────────────────── */
+
+  --dc-bg-overlay:     rgba(5, 0, 0, 0.45);      /* Full-page photo overlay */
+  --dc-bg-card:        rgba(25, 5, 0, 0.50);      /* Card background */
+  --dc-bg-card-header: rgba(120, 10, 0, 0.50);    /* Card header */
+  --dc-bg-sidebar:     linear-gradient(180deg, rgba(60, 0, 0, 0.68) 0%, rgba(20, 0, 0, 0.75) 100%);
+  --dc-bg-panel-left:  linear-gradient(160deg, rgba(80, 0, 0, 0.80) 0%, rgba(20, 0, 0, 0.88) 100%);
+  --dc-bg-panel-right: rgba(25, 5, 0, 0.55);
+  --dc-bg-input:       rgba(35, 5, 0, 0.35);
+  --dc-bg-input-focus: rgba(40, 5, 0, 0.45);
+  --dc-bg-input-icon:  rgba(100, 0, 0, 0.45);
+  --dc-bg-nav-hover:   rgba(139, 0, 0, 0.35);
+  --dc-bg-nav-active:  rgba(139, 0, 0, 0.45);
+  --dc-bg-row-hover:   rgba(139, 0, 0, 0.20);
+  --dc-bg-row-stripe:  rgba(80, 0, 0, 0.15);
+  --dc-bg-dark-inset:  #1a0000;                   /* Select option bg */
+
+  /* ─────────────────────────────────────────
+     TEXT
+  ───────────────────────────────────────── */
+
+  --dc-text-primary:   #fff8ee;                      /* Main body text — warm off-white */
+  --dc-text-muted:     rgba(255, 220, 170, 0.70);    /* Muted / secondary text */
+  --dc-text-warm:      rgba(255, 220, 170, 0.85);    /* Form labels */
+  --dc-text-soft:      rgba(255, 200, 150, 0.75);    /* text-secondary equivalent */
+  --dc-text-placeholder: rgba(255, 200, 150, 0.40);  /* Input placeholders */
+  --dc-text-accent:    #d4af37;                      /* Gold — headings, links, active */
+  --dc-text-cream:     #ffeebb;                      /* Button text */
+  --dc-text-tagline:   rgba(255, 220, 150, 0.60);    /* Footer tagline */
+  --dc-text-link:      #d4af37;
+  --dc-text-link-hover: #f0c84a;
+
+  /* ─────────────────────────────────────────
+     BORDERS
+  ───────────────────────────────────────── */
+
+  --dc-border:         rgba(212, 175, 55, 0.30);   /* Standard border */
+  --dc-border-strong:  rgba(212, 175, 55, 0.45);   /* Emphasized border */
+  --dc-border-subtle:  rgba(212, 175, 55, 0.20);   /* Subtle divider */
+  --dc-border-faint:   rgba(212, 175, 55, 0.12);   /* Table row borders */
+  --dc-border-ring:    rgba(139, 0, 0, 0.20);      /* Inner box-shadow ring on cards */
+  --dc-border-active:  3px solid #d4af37;          /* Sidebar active left border */
+  --dc-focus-ring:     0 0 0 3px rgba(212, 175, 55, 0.15);
+
+  /* ─────────────────────────────────────────
+     SHADOWS
+  ───────────────────────────────────────── */
+
+  --dc-shadow-card:    0 0 0 1px rgba(139, 0, 0, 0.2), 0 4px 24px rgba(0, 0, 0, 0.5);
+  --dc-shadow-btn:     0 3px 14px rgba(120, 0, 0, 0.50);
+  --dc-shadow-btn-hover: 0 5px 18px rgba(160, 0, 0, 0.60);
+  --dc-shadow-login:   0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(212, 175, 55, 0.25);
+  --dc-shadow-sidebar: 4px 0 20px rgba(0, 0, 0, 0.5);
+  --dc-shadow-icon:    drop-shadow(0 0 10px rgba(212, 175, 55, 0.40));
+  --dc-shadow-brand:   drop-shadow(0 0 6px rgba(212, 175, 55, 0.40));
+
+  /* ─────────────────────────────────────────
+     STAT ACCENT COLORS
+  ───────────────────────────────────────── */
+
+  --dc-stat-blue:      #4da6ff;
+  --dc-stat-green:     #4dffaa;
+  --dc-stat-orange:    #ffb84d;
+  --dc-stat-red:       #ff6666;
+
+  /* ─────────────────────────────────────────
+     SEMANTIC ALERT COLORS
+  ───────────────────────────────────────── */
+
+  --dc-success-bg:     rgba(0, 60, 20, 0.40);
+  --dc-success-border: rgba(77, 255, 140, 0.30);
+  --dc-success-text:   #a8ffcc;
+
+  --dc-danger-bg:      rgba(80, 0, 0, 0.40);
+  --dc-danger-border:  rgba(212, 175, 55, 0.30);
+  --dc-danger-text:    #ffb3b3;
+
+  --dc-warning-bg:     rgba(60, 30, 0, 0.40);
+  --dc-warning-border: rgba(212, 175, 55, 0.35);
+  --dc-warning-text:   #ffe4a0;
+
+  --dc-info-bg:        rgba(0, 30, 60, 0.40);
+  --dc-info-border:    rgba(100, 180, 255, 0.30);
+  --dc-info-text:      #a0d8ff;
+
+  /* ─────────────────────────────────────────
+     SPACING
+  ───────────────────────────────────────── */
+
+  --dc-sidebar-width:  250px;
+  --dc-content-pad:    1.75rem;
+  --dc-card-radius:    12px;
+  --dc-input-radius:   8px;
+  --dc-alert-radius:   10px;
+
+  /* ─────────────────────────────────────────
+     TYPOGRAPHY
+  ───────────────────────────────────────── */
+
+  /* Font stack */
+  --dc-font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Scale */
+  --dc-text-xs:    0.75rem;    /* 12px — taglines, badges */
+  --dc-text-sm:    0.82rem;    /* ~13px — form labels (login), small text */
+  --dc-text-base:  0.875rem;   /* 14px — labels, small body */
+  --dc-text-body:  0.9rem;     /* ~14.4px — nav links, secondary body */
+  --dc-text-md:    1rem;       /* 16px — standard body */
+  --dc-text-lg:    1.35rem;    /* ~21.6px — form headings */
+  --dc-text-xl:    1.75rem;    /* 28px — brand title on login panel */
+  --dc-text-2xl:   2rem;       /* 32px — dashboard stat numbers */
+  --dc-text-icon:  3rem;       /* 48px — brand icon on login */
+
+  /* Weights */
+  --dc-weight-normal:  400;
+  --dc-weight-medium:  500;
+  --dc-weight-semibold: 600;
+  --dc-weight-bold:    700;
+
+  /* Letter spacing */
+  --dc-tracking-tight:  0;
+  --dc-tracking-normal: 0.5px;
+  --dc-tracking-wide:   1px;
+
+  /* Line heights */
+  --dc-leading-tight:  1.2;
+  --dc-leading-normal: 1.5;
+}
+
+/* ─────────────────────────────────────────
+   SEMANTIC TYPE CLASSES
+───────────────────────────────────────── */
+
+.dc-h1, h1 {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-primary);
+  font-weight: var(--dc-weight-bold);
+}
+
+.dc-h2, h2 {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-primary);
+  font-weight: var(--dc-weight-bold);
+}
+
+.dc-page-title {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-accent);
+  font-weight: var(--dc-weight-bold);
+  letter-spacing: var(--dc-tracking-normal);
+}
+
+.dc-brand-title {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-primary);
+  font-size: var(--dc-text-xl);
+  font-weight: var(--dc-weight-bold);
+  letter-spacing: var(--dc-tracking-wide);
+  line-height: var(--dc-leading-tight);
+}
+
+.dc-brand-name {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-gold);
+  font-weight: var(--dc-weight-bold);
+  letter-spacing: var(--dc-tracking-normal);
+  filter: var(--dc-shadow-brand);
+}
+
+.dc-body {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-primary);
+  font-size: var(--dc-text-md);
+  font-weight: var(--dc-weight-normal);
+  line-height: var(--dc-leading-normal);
+}
+
+.dc-body-sm {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-primary);
+  font-size: var(--dc-text-base);
+  line-height: var(--dc-leading-normal);
+}
+
+.dc-label {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-warm);
+  font-size: var(--dc-text-base);
+  font-weight: var(--dc-weight-medium);
+}
+
+.dc-label-caps {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-warm);
+  font-size: var(--dc-text-sm);
+  font-weight: var(--dc-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--dc-tracking-normal);
+}
+
+.dc-muted {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-muted);
+  font-size: var(--dc-text-body);
+}
+
+.dc-tagline {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-tagline);
+  font-size: var(--dc-text-xs);
+}
+
+.dc-stat-number {
+  font-family: var(--dc-font-sans);
+  color: var(--dc-text-primary);
+  font-size: var(--dc-text-2xl);
+  font-weight: var(--dc-weight-bold);
+  line-height: 1;
+}
+
+.dc-link {
+  color: var(--dc-text-link);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.dc-link:hover {
+  color: var(--dc-text-link-hover);
+}
+
+/* ─────────────────────────────────────────
+   BACKDROP & GLASS UTILITIES
+───────────────────────────────────────── */
+
+.dc-glass {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.dc-glass-strong {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
+
+.dc-scrollbar::-webkit-scrollbar { width: 6px; }
+.dc-scrollbar::-webkit-scrollbar-track { background: rgba(10, 0, 0, 0.15); }
+.dc-scrollbar::-webkit-scrollbar-thumb { background: rgba(139, 0, 0, 0.6); border-radius: 3px; }
+.dc-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(180, 0, 0, 0.8); }

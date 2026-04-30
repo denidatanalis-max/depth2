@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Depth Culture — UI Kit</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  background: #0a0000;
+  background-image: url('../../assets/background_login2.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: #fff8ee;
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(5,0,0,0.22);
+  z-index: 0;
+}
+#root { position: relative; z-index: 1; min-height: 100vh; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(10,0,0,0.15); }
+::-webkit-scrollbar-thumb { background: rgba(139,0,0,0.6); border-radius: 3px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+/* ─── SHARED TOKENS ─────────────────────────── */
+const C = {
+  gold: '#d4af37',
+  goldHover: '#f0c84a',
+  goldDim: 'rgba(212,175,55,0.30)',
+  goldDimFaint: 'rgba(212,175,55,0.15)',
+  red: 'linear-gradient(135deg,#7a0000,#b80000)',
+  redHover: 'linear-gradient(135deg,#9a0000,#cc0000)',
+  green: 'linear-gradient(135deg,#004d1a,#006622)',
+  amber: 'linear-gradient(135deg,#7a4800,#b86b00)',
+  cardBg: 'rgba(90,22,5,0.62)',
+  cardHeader: 'rgba(160,35,5,0.65)',
+  sidebarBg: 'linear-gradient(180deg,rgba(115,18,5,0.82) 0%,rgba(65,10,0,0.88) 100%)',
+  textPrimary: '#fff8ee',
+  textMuted: 'rgba(255,220,170,0.70)',
+  textWarm: 'rgba(255,220,170,0.85)',
+  textCream: '#ffeebb',
+  border: '1px solid rgba(212,175,55,0.30)',
+  borderStrong: '1px solid rgba(212,175,55,0.45)',
+};
+
+/* ─── BASE COMPONENTS ───────────────────────── */
+const Card = ({ children, style, headerContent }) => (
+  <div style={{
+    background: C.cardBg,
+    border: C.border,
+    borderRadius: 12,
+    boxShadow: '0 0 0 1px rgba(139,0,0,0.2), 0 4px 24px rgba(0,0,0,0.5)',
+    backdropFilter: 'blur(2px)',
+    overflow: 'hidden',
+    ...style
+  }}>
+    {headerContent && (
+      <div style={{
+        background: C.cardHeader,
+        borderBottom: C.border,
+        padding: '10px 16px',
+        color: C.gold,
+        fontWeight: 600,
+        fontSize: '0.9rem',
+        display: 'flex', alignItems: 'center', gap: 8
+      }}>{headerContent}</div>
+    )}
+    {children}
+  </div>
+);
+
+const Btn = ({ children, variant='primary', sm, onClick, style, icon, disabled }) => {
+  const [hov, setHov] = React.useState(false);
+  const bases = {
+    primary:   { bg: hov ? C.redHover : C.red,    border: hov ? C.borderStrong : C.border, color: C.textCream, shadow: hov ? '0 5px 18px rgba(160,0,0,0.6)' : '0 3px 14px rgba(120,0,0,0.5)' },
+    success:   { bg: C.green,   border: C.border, color: '#ccffdd', shadow: 'none' },
+    warning:   { bg: C.amber,   border: C.border, color: '#fff3cc', shadow: 'none' },
+    secondary: { bg: 'rgba(60,0,0,0.5)', border: C.border, color: C.textWarm, shadow: 'none' },
+    outline:   { bg: 'transparent', border: C.borderStrong, color: C.gold, shadow: 'none' },
+  };
+  const b = bases[variant] || bases.primary;
+  return (
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+      style={{
+        background: b.bg,
+        border: b.border,
+        borderRadius: 8,
+        color: b.color,
+        fontWeight: 600,
+        fontSize: sm ? '0.78rem' : '0.875rem',
+        padding: sm ? '4px 10px' : '8px 16px',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        transition: 'all 0.2s ease',
+        transform: hov && !disabled ? 'translateY(-1px)' : 'none',
+        boxShadow: b.shadow,
+        opacity: disabled ? 0.5 : 1,
+        fontFamily: 'inherit',
+        ...style,
+      }}
+    >
+      {icon && <i className={`bi bi-${icon}`}></i>}
+      {children}
+    </button>
+  );
+};
+
+const Badge = ({ children, color }) => {
+  const colors = {
+    gold: { bg: 'rgba(139,0,0,0.6)', border: 'rgba(212,175,55,0.4)', text: C.gold },
+    blue: { bg: 'rgba(0,30,80,0.6)', border: 'rgba(100,180,255,0.3)', text: '#a0d8ff' },
+    green: { bg: 'rgba(0,60,20,0.6)', border: 'rgba(77,255,140,0.3)', text: '#a8ffcc' },
+    red: { bg: 'rgba(80,0,0,0.6)', border: 'rgba(255,100,100,0.3)', text: '#ffb3b3' },
+    amber: { bg: 'rgba(60,30,0,0.6)', border: 'rgba(212,175,55,0.35)', text: '#ffe4a0' },
+    gray: { bg: 'rgba(40,40,40,0.6)', border: 'rgba(150,150,150,0.2)', text: '#ccc' },
+  };
+  const c = colors[color] || colors.gold;
+  return (
+    <span style={{
+      background: c.bg, border: `1px solid ${c.border}`, color: c.text,
+      fontSize: '0.72rem', fontWeight: 500, padding: '2px 8px', borderRadius: 20,
+      display: 'inline-flex', alignItems: 'center'
+    }}>{children}</span>
+  );
+};
+
+const statusBadge = (status) => {
+  const map = {
+    draft: ['Draft', 'gray'], submitted: ['Submitted', 'blue'],
+    approved: ['Approved', 'green'], rejected: ['Rejected', 'red'],
+    uploaded: ['Uploaded', 'blue'], under_review: ['Under Review', 'amber'],
+    scoring: ['Scoring', 'amber'], score_revision: ['Perlu Revisi', 'red'],
+    under_recommendation: ['Rekomendasi', 'blue'], recommended: ['Recommended', 'green'],
+    not_recommended: ['Ditolak', 'red'], published: ['Published', 'green'],
+  };
+  const [label, color] = map[status] || [status, 'gray'];
+  return <Badge color={color}>{label}</Badge>;
+};
+
+const Alert = ({ type='info', children }) => {
+  const styles = {
+    success: { bg: 'rgba(0,60,20,0.4)', border: 'rgba(77,255,140,0.3)', color: '#a8ffcc' },
+    danger:  { bg: 'rgba(80,0,0,0.4)',  border: 'rgba(212,175,55,0.3)',  color: '#ffb3b3' },
+    warning: { bg: 'rgba(60,30,0,0.4)', border: 'rgba(212,175,55,0.35)', color: '#ffe4a0' },
+    info:    { bg: 'rgba(0,30,60,0.4)', border: 'rgba(100,180,255,0.3)', color: '#a0d8ff' },
+  };
+  const s = styles[type];
+  return (
+    <div style={{ background: s.bg, border: `1px solid ${s.border}`, color: s.color,
+      borderRadius: 10, padding: '10px 14px', fontSize: '0.875rem', marginBottom: 12 }}>
+      {children}
+    </div>
+  );
+};
+
+const FormField = ({ label, type='text', placeholder, value, onChange, icon }) => (
+  <div style={{ marginBottom: 14 }}>
+    {label && <label style={{ color: C.textWarm, fontSize: '0.82rem', fontWeight: 600,
+      textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: 5 }}>
+      {label}
+    </label>}
+    <div style={{ display: 'flex' }}>
+      {icon && <span style={{ background: 'rgba(100,0,0,0.45)', border: C.border, borderRight: 'none',
+        padding: '8px 12px', color: C.gold, borderRadius: '8px 0 0 8px', display:'flex', alignItems:'center' }}>
+        <i className={`bi bi-${icon}`}></i>
+      </span>}
+      <input type={type} placeholder={placeholder} value={value} onChange={onChange}
+        style={{ background: 'rgba(90,22,5,0.50)', border: C.border, borderLeft: icon ? 'none' : C.border,
+          color: '#fff8ee', padding: '8px 12px', borderRadius: icon ? '0 8px 8px 0' : 8,
+          fontSize: '0.9rem', flex: 1, outline: 'none', fontFamily: 'inherit', width: '100%' }} />
+    </div>
+  </div>
+);
+
+/* ─── SIDEBAR ───────────────────────────────── */
+const Sidebar = ({ user, role, activePage, onNav }) => {
+  const links = [
+    { id: 'public', icon: 'globe', label: 'Publikasi' },
+    { id: 'dashboard', icon: 'speedometer2', label: 'Dashboard' },
+    ...(role === 'writer' ? [{ id: 'create', icon: 'plus-circle', label: 'Buat Jurnal Baru' }] : []),
+  ];
+  return (
+    <div style={{ width: 250, minHeight: '100vh', background: C.sidebarBg,
+      borderRight: C.border, display: 'flex', flexDirection: 'column',
+      backdropFilter: 'blur(4px)', boxShadow: '4px 0 20px rgba(0,0,0,0.5)',
+      position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
+      <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid rgba(212,175,55,0.25)' }}>
+        <div style={{ color: C.gold, fontWeight: 700, fontSize: '1rem', letterSpacing: '0.5px',
+          filter: 'drop-shadow(0 0 6px rgba(212,175,55,0.4))', display:'flex', alignItems:'center', gap:8 }}>
+          <i className="bi bi-journal-text"></i> Depth Culture
+        </div>
+        <div style={{ color: 'rgba(255,220,170,0.60)', fontSize: '0.72rem', marginTop: 3 }}>
+          Sistem Manajemen Jurnal
+        </div>
+      </div>
+      <nav style={{ flex: 1, padding: '6px 0' }}>
+        {links.map(l => (
+          <div key={l.id} onClick={() => onNav(l.id)}
+            style={{
+              padding: activePage === l.id ? '10px 20px 10px 17px' : '10px 20px',
+              color: activePage === l.id ? C.gold : 'rgba(255,220,170,0.7)',
+              background: activePage === l.id ? 'rgba(139,0,0,0.45)' : 'transparent',
+              borderLeft: activePage === l.id ? `3px solid ${C.gold}` : '3px solid transparent',
+              display: 'flex', alignItems: 'center', gap: 8,
+              fontSize: '0.88rem', fontWeight: activePage === l.id ? 600 : 400,
+              cursor: 'pointer', transition: 'all 0.2s',
+            }}>
+            <i className={`bi bi-${l.icon}`}></i> {l.label}
+          </div>
+        ))}
+      </nav>
+      <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(212,175,55,0.2)', fontSize: '0.8rem' }}>
+        <div style={{ color: 'rgba(255,220,170,0.85)', fontWeight: 500, marginBottom: 4 }}>
+          <i className="bi bi-person-circle"></i> {user.name}
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <Badge color="gold">{user.roleLabel}</Badge>
+        </div>
+        <div style={{ color: '#fff', fontSize: '0.78rem', cursor: 'pointer', opacity: 0.7 }}
+          onClick={() => onNav('login')}>
+          <i className="bi bi-box-arrow-left"></i> Logout
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── JOURNAL TABLE ─────────────────────────── */
+const JournalTable = ({ journals, onView, showAuthor }) => (
+  <div style={{ overflowX: 'auto' }}>
+    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+      <thead>
+        <tr style={{ background: 'rgba(120,10,0,0.45)' }}>
+          {['Judul', showAuthor && 'Penulis', 'Status', 'Revisi', 'Terakhir Diubah', 'Aksi']
+            .filter(Boolean).map(h => (
+            <th key={h} style={{ padding: '10px 14px', color: C.gold, fontWeight: 600,
+              textAlign: 'left', borderBottom: '1px solid rgba(212,175,55,0.2)', whiteSpace:'nowrap' }}>{h}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {journals.map((j, i) => (
+          <tr key={j.id} style={{ background: i % 2 === 0 ? 'rgba(120,25,5,0.20)' : 'transparent',
+            borderBottom: '1px solid rgba(212,175,55,0.10)' }}>
+            <td style={{ padding: '10px 14px', color: C.gold, fontWeight: 500, maxWidth: 240 }}>
+              <span style={{ cursor: 'pointer' }} onClick={() => onView(j)}>{j.title}</span>
+            </td>
+            {showAuthor && <td style={{ padding: '10px 14px', color: C.textMuted }}>{j.author}</td>}
+            <td style={{ padding: '10px 14px' }}>{statusBadge(j.status)}</td>
+            <td style={{ padding: '10px 14px', color: C.textMuted, textAlign: 'center' }}>{j.revisions}</td>
+            <td style={{ padding: '10px 14px', color: C.textMuted, fontSize: '0.8rem', whiteSpace: 'nowrap' }}>{j.date}</td>
+            <td style={{ padding: '10px 14px' }}>
+              <Btn sm variant="outline" icon="eye" onClick={() => onView(j)}>Lihat</Btn>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+/* ─── SCREEN: LOGIN ─────────────────────────── */
+const LoginScreen = ({ onLogin }) => {
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [error, setError] = React.useState('');
+
+  const USERS = {
+    supervisor1: { name: 'Andi Pratama', role: 'writer', roleLabel: 'Writer' },
+    manager1:    { name: 'Budi Santoso', role: 'manager', roleLabel: 'Leader' },
+    admin1:      { name: 'Yuni Astuti',  role: 'admin',   roleLabel: 'Admin' },
+    scoring1:    { name: 'Prof. Reviewer', role: 'scoring', roleLabel: 'Scoring' },
+  };
+
+  const handleLogin = () => {
+    const u = USERS[username];
+    if (u && password === 'demo1234') { setError(''); onLogin(username, u); }
+    else setError('Username atau password salah. Gunakan password: demo1234');
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+      <div style={{ display: 'flex', width: 820, maxWidth: '100%', borderRadius: 20, overflow: 'hidden',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.25)' }}>
+
+        {/* Left panel */}
+        <div style={{ width: '42%', background: 'linear-gradient(160deg,rgba(130,20,5,0.82) 0%,rgba(75,10,0,0.88) 100%)',
+          borderRight: C.border, padding: '3rem 2.5rem', display: 'flex', flexDirection: 'column',
+          justifyContent: 'space-between', backdropFilter: 'blur(6px)', position: 'relative', overflow: 'hidden' }}>
+          <div>
+            <i className="bi bi-journal-text" style={{ fontSize: '3rem', color: C.gold, display: 'block',
+              marginBottom: '1rem', filter: 'drop-shadow(0 0 10px rgba(212,175,55,0.4))' }}></i>
+            <div style={{ color: '#fff8ee', fontSize: '1.75rem', fontWeight: 700, letterSpacing: 1, lineHeight: 1.2 }}>
+              Depth<br/>Culture
+            </div>
+            <p style={{ color: 'rgba(255,220,170,0.75)', fontSize: '0.875rem', marginTop: 8, lineHeight: 1.5 }}>
+              Sistem Manajemen<br/>Jurnal Perusahaan
+            </p>
+          </div>
+          <div style={{ color: 'rgba(255,220,150,0.55)', fontSize: '0.72rem', borderTop: '1px solid rgba(212,175,55,0.2)', paddingTop: 12 }}>
+            © Depth Culture — Internal System
+          </div>
+        </div>
+
+        {/* Right panel */}
+        <div style={{ flex: 1, background: 'rgba(85,20,5,0.62)', backdropFilter: 'blur(8px)',
+          padding: '3rem 2.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ color: C.gold, fontSize: '1.35rem', fontWeight: 700, marginBottom: 4 }}>Selamat Datang</div>
+          <div style={{ color: 'rgba(255,220,170,0.65)', fontSize: '0.85rem', marginBottom: 24 }}>
+            Masuk untuk melanjutkan ke dashboard
+          </div>
+          {error && <Alert type="danger"><i className="bi bi-exclamation-triangle-fill"></i> {error}</Alert>}
+          <FormField label="Username" placeholder="Masukkan username" value={username}
+            onChange={e => setUsername(e.target.value)} icon="person-fill" />
+          <FormField label="Password" type="password" placeholder="Masukkan password" value={password}
+            onChange={e => setPassword(e.target.value)} icon="lock-fill" />
+          <div style={{ color: 'rgba(255,220,170,0.5)', fontSize: '0.75rem', marginBottom: 16, marginTop: -6 }}>
+            Demo: supervisor1 / manager1 / admin1 / scoring1 — password: demo1234
+          </div>
+          <Btn icon="box-arrow-in-right" onClick={handleLogin} style={{ width: '100%', justifyContent: 'center' }}>
+            Masuk
+          </Btn>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── SAMPLE DATA ───────────────────────────── */
+const JOURNALS = [
+  { id: 1, title: 'Analisis Metodologi Riset Internal 2024', author: 'Andi Pratama', status: 'submitted', revisions: 0, date: '28 Apr 2025', abstract: 'Penelitian ini membahas pendekatan metodologi yang digunakan dalam program riset internal perusahaan selama tahun 2024, mencakup evaluasi efektivitas dan rekomendasi perbaikan.' },
+  { id: 2, title: 'Optimasi Proses Operasional Divisi Teknologi', author: 'Dewi Lestari', status: 'approved', revisions: 1, date: '25 Apr 2025', abstract: 'Kajian mendalam tentang potensi optimasi proses kerja di divisi teknologi, dengan fokus pada pengurangan waktu siklus dan peningkatan kualitas output.' },
+  { id: 3, title: 'Strategi Pengembangan Sumber Daya Manusia', author: 'Fajar Nugroho', status: 'published', revisions: 2, date: '20 Apr 2025', abstract: 'Analisis komprehensif strategi pengembangan SDM yang efektif untuk mendukung pertumbuhan organisasi jangka panjang.' },
+  { id: 4, title: 'Evaluasi Sistem Pelaporan Keuangan Q1 2025', author: 'Rina Wijaya', status: 'scoring', revisions: 1, date: '18 Apr 2025', abstract: 'Tinjauan kritis terhadap sistem pelaporan keuangan triwulan pertama 2025 beserta rekomendasi peningkatan akurasi dan transparansi.' },
+  { id: 5, title: 'Implementasi Kebijakan ESG di Lingkungan Kerja', author: 'Hadi Kurniawan', status: 'draft', revisions: 0, date: '15 Apr 2025', abstract: 'Studi tentang implementasi prinsip Environmental, Social, and Governance dalam operasional harian perusahaan.' },
+];
+
+/* ─── SCREEN: DASHBOARD WRITER ──────────────── */
+const WriterDashboard = ({ user, onView, onNav }) => {
+  const myJournals = JOURNALS.filter(j => j.author === user.name || j.author === 'Andi Pratama');
+  const pending = myJournals.filter(j => ['submitted','approved','uploaded','under_review'].includes(j.status)).length;
+  const stats = [
+    { label: 'Total Jurnal', val: myJournals.length, color: '#4da6ff' },
+    { label: 'Menunggu Approval', val: pending, color: '#ffb84d' },
+    { label: 'Diverifikasi', val: myJournals.filter(j=>j.status==='published').length, color: '#4dffaa' },
+    { label: 'Perlu Revisi', val: myJournals.filter(j=>j.status==='rejected'||j.status==='score_revision').length, color: '#ff6666' },
+  ];
+  return (
+    <div style={{ padding: '1.75rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+        <div>
+          <h4 style={{ color: C.gold, margin: 0, marginBottom: 4 }}>
+            <i className="bi bi-pencil-fill"></i> Dashboard Writer
+          </h4>
+          <p style={{ color: C.textMuted, margin: 0, fontSize: '0.875rem' }}>
+            Selamat datang, {user.name} | Leader: <strong style={{ color: 'rgba(255,220,170,0.8)' }}>Budi Santoso</strong>
+          </p>
+        </div>
+        <Btn icon="plus-circle" onClick={() => onNav('create')}>Buat Jurnal Baru</Btn>
+      </div>
+
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 24 }}>
+        {stats.map(s => (
+          <Card key={s.label} style={{ borderLeft: `4px solid ${s.color}`, padding: '14px 16px' }}>
+            <div style={{ color: C.textMuted, fontSize: '0.8rem', marginBottom: 4 }}>{s.label}</div>
+            <div style={{ color: C.textPrimary, fontSize: '1.8rem', fontWeight: 700 }}>{s.val}</div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Journal list */}
+      <Card headerContent={<><i className="bi bi-journal-text"></i> Jurnal Saya</>}>
+        {myJournals.length > 0
+          ? <JournalTable journals={myJournals} onView={onView} showAuthor={false} />
+          : <div style={{ textAlign: 'center', padding: '3rem', color: C.textMuted }}>
+              <i className="bi bi-journal-x" style={{ fontSize: '3rem', color: 'rgba(212,175,55,0.3)', display: 'block', marginBottom: 12 }}></i>
+              <p>Belum ada jurnal. Mulai buat jurnal pertama Anda!</p>
+              <Btn icon="plus-circle" onClick={() => onNav('create')} style={{ marginTop: 12 }}>Buat Jurnal Baru</Btn>
+            </div>
+        }
+      </Card>
+    </div>
+  );
+};
+
+/* ─── SCREEN: DASHBOARD MANAGER ─────────────── */
+const ManagerDashboard = ({ user, onView }) => {
+  const allJournals = JOURNALS;
+  const pending = allJournals.filter(j => j.status === 'submitted' || j.status === 'uploaded');
+  const stats = [
+    { label: 'Menunggu Approval', val: pending.length, color: '#ffb84d' },
+    { label: 'Total Jurnal Writer', val: allJournals.length, color: '#4da6ff' },
+    { label: 'Jumlah Writer', val: 3, color: '#4dffaa' },
+  ];
+  return (
+    <div style={{ padding: '1.75rem' }}>
+      <div style={{ marginBottom: 24 }}>
+        <h4 style={{ color: C.gold, margin: 0, marginBottom: 4 }}>
+          <i className="bi bi-people-fill"></i> Dashboard Leader
+        </h4>
+        <p style={{ color: C.textMuted, margin: 0, fontSize: '0.875rem' }}>
+          Selamat datang, {user.name} | 3 Writer di bawah Anda
+        </p>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 24 }}>
+        {stats.map(s => (
+          <Card key={s.label} style={{ borderLeft: `4px solid ${s.color}`, padding: '14px 16px' }}>
+            <div style={{ color: C.textMuted, fontSize: '0.8rem', marginBottom: 4 }}>{s.label}</div>
+            <div style={{ color: C.textPrimary, fontSize: '1.8rem', fontWeight: 700 }}>{s.val}</div>
+          </Card>
+        ))}
+      </div>
+
+      {pending.length > 0 && (
+        <Card style={{ marginBottom: 16 }}
+          headerContent={<><i className="bi bi-hourglass-split"></i> Menunggu Persetujuan Anda</>}>
+          <JournalTable journals={pending} onView={onView} showAuthor={true} />
+        </Card>
+      )}
+
+      <Card headerContent={<><i className="bi bi-journal-text"></i> Semua Jurnal Writer</>}>
+        <JournalTable journals={allJournals} onView={onView} showAuthor={true} />
+      </Card>
+    </div>
+  );
+};
+
+/* ─── SCREEN: JOURNAL DETAIL ─────────────────── */
+const JournalDetail = ({ journal, userRole, onBack }) => {
+  const [flash, setFlash] = React.useState('');
+  const doAction = (msg) => { setFlash(msg); setTimeout(() => setFlash(''), 3000); };
+
+  const WorkflowStep = ({ num, label, state }) => (
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.8rem' }}>
+      <div style={{
+        width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontWeight: 600, fontSize: '0.7rem',
+        background: state==='active' ? '#8b0000' : state==='done' ? '#004d1a' : 'rgba(212,175,55,0.15)',
+        border: `1px solid ${state==='active' ? '#d4af37' : state==='done' ? 'rgba(77,255,140,0.4)' : 'rgba(212,175,55,0.3)'}`,
+        color: state==='active' ? '#ffeebb' : state==='done' ? '#a8ffcc' : 'rgba(255,220,170,0.5)',
+      }}>{num}</div>
+      <span style={{ color: state==='active' ? C.gold : state==='done' ? 'rgba(168,255,204,0.7)' : C.textMuted }}>{label}</span>
+    </div>
+  );
+
+  const steps = [
+    { num:'01', label:'Draft' }, { num:'02', label:'Submitted' }, { num:'03', label:'PDF Upload' },
+    { num:'04', label:'Review' }, { num:'05', label:'Scoring' }, { num:'06', label:'Rekomendasi' }, { num:'07', label:'Publish' },
+  ];
+  const activeIdx = ['draft','submitted','approved','under_review','scoring','under_recommendation','published'].indexOf(journal.status);
+
+  return (
+    <div style={{ padding: '1.75rem' }}>
+      <div style={{ marginBottom: 20 }}>
+        <button onClick={onBack} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer', fontSize: '0.875rem', padding: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <i className="bi bi-arrow-left"></i> Kembali ke Dashboard
+        </button>
+      </div>
+
+      {flash && <Alert type="success"><i className="bi bi-check-circle-fill"></i> {flash}</Alert>}
+
+      {/* Workflow progress */}
+      <Card style={{ marginBottom: 16, padding: '14px 18px' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+          {steps.map((s, i) => (
+            <React.Fragment key={s.num}>
+              <WorkflowStep num={s.num} label={s.label}
+                state={i < activeIdx ? 'done' : i === activeIdx ? 'active' : 'pending'} />
+              {i < steps.length-1 && <span style={{ color: 'rgba(212,175,55,0.3)', fontSize: '0.75rem' }}>›</span>}
+            </React.Fragment>
+          ))}
+        </div>
+      </Card>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 16 }}>
+        {/* Main info */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card headerContent={<><i className="bi bi-file-text"></i> Informasi Jurnal</>}>
+            <div style={{ padding: '16px 18px' }}>
+              <h5 style={{ color: C.gold, marginBottom: 8, fontWeight: 700 }}>{journal.title}</h5>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+                {statusBadge(journal.status)}
+                <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>{journal.author} · {journal.date}</span>
+                <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>Revisi: {journal.revisions}×</span>
+              </div>
+              <div style={{ color: C.textPrimary, fontSize: '0.875rem', lineHeight: 1.7, borderTop: '1px solid rgba(212,175,55,0.15)', paddingTop: 14 }}>
+                <div style={{ color: C.textMuted, fontSize: '0.78rem', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ringkasan</div>
+                {journal.abstract}
+              </div>
+            </div>
+          </Card>
+
+          {/* Activity log */}
+          <Card headerContent={<><i className="bi bi-clock-history"></i> Riwayat Aktivitas</>}>
+            <div style={{ padding: '12px 18px' }}>
+              {[
+                { icon: 'plus-circle', text: 'Jurnal dibuat oleh ' + journal.author, time: journal.date, color: '#a0d8ff' },
+                { icon: 'send', text: 'Diajukan ke Manager untuk review', time: journal.date, color: C.gold },
+                ...(journal.status !== 'submitted' ? [{ icon: 'check-circle', text: 'Judul & ringkasan disetujui oleh Manager', time: journal.date, color: '#a8ffcc' }] : []),
+              ].map((log, i) => (
+                <div key={i} style={{ display: 'flex', gap: 12, paddingBottom: 10,
+                  borderBottom: i < 2 ? '1px solid rgba(212,175,55,0.1)' : 'none', marginBottom: 10 }}>
+                  <i className={`bi bi-${log.icon}`} style={{ color: log.color, marginTop: 2 }}></i>
+                  <div>
+                    <div style={{ color: C.textPrimary, fontSize: '0.85rem' }}>{log.text}</div>
+                    <div style={{ color: C.textMuted, fontSize: '0.75rem' }}>{log.time}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Actions sidebar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <Card headerContent={<><i className="bi bi-lightning-charge"></i> Aksi Tersedia</>}>
+            <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {userRole === 'writer' && journal.status === 'submitted' && (
+                <p style={{ color: C.textMuted, fontSize: '0.82rem', textAlign: 'center', padding: '8px 0' }}>
+                  <i className="bi bi-hourglass-split"></i><br/>Menunggu review Manager
+                </p>
+              )}
+              {userRole === 'writer' && journal.status === 'approved' && (
+                <Btn icon="upload" style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => doAction('PDF berhasil diupload. Jurnal dikirim ke Manager untuk review file.')}>
+                  Upload File PDF
+                </Btn>
+              )}
+              {userRole === 'manager' && journal.status === 'submitted' && (<>
+                <Btn variant="success" icon="check-circle" style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => doAction('Judul & ringkasan disetujui. Writer dapat upload PDF.')}>
+                  Setujui Judul & Ringkasan
+                </Btn>
+                <Btn variant="warning" icon="arrow-counterclockwise" style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => doAction('Jurnal dikembalikan untuk revisi.')}>
+                  Minta Revisi
+                </Btn>
+              </>)}
+              {userRole === 'admin' && journal.status === 'under_review' && (
+                <Btn icon="send" style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => doAction('Jurnal berhasil dikirim ke Scoring.')}>
+                  Kirim ke Scoring
+                </Btn>
+              )}
+              {userRole === 'scoring' && journal.status === 'scoring' && (
+                <Btn variant="success" icon="star" style={{ width: '100%', justifyContent: 'center' }}
+                  onClick={() => doAction('Penilaian berhasil disimpan.')}>
+                  Beri Penilaian
+                </Btn>
+              )}
+            </div>
+          </Card>
+
+          {/* Score display if scored */}
+          {['under_recommendation','recommended','published'].includes(journal.status) && (
+            <Card headerContent={<><i className="bi bi-bar-chart-fill"></i> Hasil Scoring</>}>
+              <div style={{ padding: '14px 16px' }}>
+                {[
+                  { label: 'Orisinalitas', score: 82 },
+                  { label: 'Metodologi', score: 76 },
+                  { label: 'Kualitas Penulisan', score: 88 },
+                  { label: 'Relevansi', score: 79 },
+                ].map(sc => (
+                  <div key={sc.label} style={{ marginBottom: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                      <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>{sc.label}</span>
+                      <span style={{ color: C.gold, fontWeight: 600, fontSize: '0.85rem' }}>{sc.score}</span>
+                    </div>
+                    <div style={{ height: 6, background: 'rgba(212,175,55,0.1)', borderRadius: 3, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${sc.score}%`, background: 'linear-gradient(90deg,#7a0000,#d4af37)', borderRadius: 3 }}></div>
+                    </div>
+                  </div>
+                ))}
+                <div style={{ borderTop: '1px solid rgba(212,175,55,0.2)', paddingTop: 10, marginTop: 6 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: C.textMuted, fontSize: '0.8rem' }}>Rata-rata</span>
+                    <span style={{ color: C.gold, fontWeight: 700 }}>81.25</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ─── SCREEN: CREATE JOURNAL ─────────────────── */
+const CreateJournal = ({ onBack, onSubmit }) => {
+  const [title, setTitle] = React.useState('');
+  const [abstract, setAbstract] = React.useState('');
+  return (
+    <div style={{ padding: '1.75rem', maxWidth: 680 }}>
+      <button onClick={onBack} style={{ background: 'none', border: 'none', color: C.gold, cursor: 'pointer',
+        fontSize: '0.875rem', padding: 0, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 20 }}>
+        <i className="bi bi-arrow-left"></i> Kembali
+      </button>
+      <Card headerContent={<><i className="bi bi-plus-circle"></i> Buat Jurnal Baru</>}>
+        <div style={{ padding: 20 }}>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ color: C.textWarm, fontSize: '0.875rem', fontWeight: 500, display: 'block', marginBottom: 6 }}>
+              Judul Jurnal <span style={{ color: '#ff6666' }}>*</span>
+            </label>
+            <input value={title} onChange={e => setTitle(e.target.value)}
+              placeholder="Masukkan judul jurnal..."
+              style={{ width: '100%', background: 'rgba(90,22,5,0.50)', border: C.border, color: '#fff8ee',
+                padding: '10px 14px', borderRadius: 8, fontSize: '0.9rem', outline: 'none', fontFamily: 'inherit' }} />
+          </div>
+          <div style={{ marginBottom: 20 }}>
+            <label style={{ color: C.textWarm, fontSize: '0.875rem', fontWeight: 500, display: 'block', marginBottom: 6 }}>
+              Ringkasan <span style={{ color: '#ff6666' }}>*</span>
+            </label>
+            <textarea value={abstract} onChange={e => setAbstract(e.target.value)}
+              placeholder="Tulis ringkasan jurnal Anda..." rows={5}
+              style={{ width: '100%', background: 'rgba(90,22,5,0.50)', border: C.border, color: '#fff8ee',
+                padding: '10px 14px', borderRadius: 8, fontSize: '0.875rem', outline: 'none',
+                fontFamily: 'inherit', resize: 'vertical' }} />
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Btn icon="send" onClick={() => onSubmit(title, abstract)} disabled={!title || !abstract}>
+              Ajukan ke Manager
+            </Btn>
+            <Btn variant="secondary" onClick={onBack}>Simpan Draft</Btn>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+/* ─── SCREEN: PUBLIC JOURNAL LIST ───────────── */
+const PublicJournals = ({ onView }) => {
+  const published = JOURNALS.filter(j => j.status === 'published');
+  return (
+    <div style={{ padding: '1.75rem' }}>
+      <h4 style={{ color: C.gold, marginBottom: 4 }}><i className="bi bi-globe"></i> Jurnal Publik</h4>
+      <p style={{ color: C.textMuted, fontSize: '0.875rem', marginBottom: 20 }}>
+        Daftar jurnal yang telah dipublikasikan dan dapat diakses publik.
+      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {published.map(j => (
+          <Card key={j.id}>
+            <div style={{ padding: '16px 18px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: C.gold, fontWeight: 600, marginBottom: 6, cursor: 'pointer' }}
+                    onClick={() => onView(j)}>{j.title}</div>
+                  <p style={{ color: C.textMuted, fontSize: '0.85rem', margin: 0, lineHeight: 1.6 }}>
+                    {j.abstract.substring(0, 120)}...
+                  </p>
+                  <div style={{ color: 'rgba(255,220,170,0.5)', fontSize: '0.78rem', marginTop: 8 }}>
+                    {j.author} · {j.date}
+                  </div>
+                </div>
+                <Btn sm variant="outline" icon="eye" onClick={() => onView(j)}>Baca</Btn>
+              </div>
+            </div>
+          </Card>
+        ))}
+        {published.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '3rem', color: C.textMuted }}>
+            Belum ada jurnal yang dipublikasikan.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/* ─── APP SHELL ─────────────────────────────── */
+const App = () => {
+  const [screen, setScreen] = React.useState('login');
+  const [currentUser, setCurrentUser] = React.useState(null);
+  const [selectedJournal, setSelectedJournal] = React.useState(null);
+  const [activePage, setActivePage] = React.useState('dashboard');
+
+  const handleLogin = (username, userData) => {
+    setCurrentUser(userData);
+    setScreen('app');
+    setActivePage('dashboard');
+  };
+
+  const handleNav = (page) => {
+    if (page === 'login') { setCurrentUser(null); setScreen('login'); return; }
+    setActivePage(page);
+    setSelectedJournal(null);
+  };
+
+  const handleViewJournal = (j) => {
+    setSelectedJournal(j);
+    setActivePage('journal_detail');
+  };
+
+  if (screen === 'login') return <LoginScreen onLogin={handleLogin} />;
+
+  const renderContent = () => {
+    if (activePage === 'journal_detail' && selectedJournal) {
+      return <JournalDetail journal={selectedJournal} userRole={currentUser.role}
+        onBack={() => { setSelectedJournal(null); setActivePage('dashboard'); }} />;
+    }
+    if (activePage === 'create') {
+      return <CreateJournal onBack={() => setActivePage('dashboard')}
+        onSubmit={(title) => { setActivePage('dashboard'); }} />;
+    }
+    if (activePage === 'public') return <PublicJournals onView={handleViewJournal} />;
+    if (currentUser.role === 'manager') return <ManagerDashboard user={currentUser} onView={handleViewJournal} />;
+    return <WriterDashboard user={currentUser} onView={handleViewJournal} onNav={handleNav} />;
+  };
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <Sidebar user={currentUser} role={currentUser.role} activePage={activePage} onNav={handleNav} />
+      <div style={{ flex: 1, minHeight: '100vh', overflowX: 'hidden' }}>
+        {renderContent()}
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

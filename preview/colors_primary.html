@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 16px; background: #3a0a00; font-family: 'Segoe UI', sans-serif; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch { display: flex; flex-direction: column; gap: 4px; }
+  .chip { width: 90px; height: 56px; border-radius: 8px; }
+  .label { color: #d4af37; font-size: 10px; font-weight: 600; }
+  .val { color: rgba(255,220,170,0.6); font-size: 9px; }
+  .group { margin-bottom: 14px; }
+  .group-title { color: rgba(255,220,170,0.6); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="group">
+  <div class="group-title">Gold Accent</div>
+  <div class="row">
+    <div class="swatch"><div class="chip" style="background:#d4af37;"></div><div class="label">Gold</div><div class="val">#d4af37</div></div>
+    <div class="swatch"><div class="chip" style="background:#f0c84a;"></div><div class="label">Gold Hover</div><div class="val">#f0c84a</div></div>
+    <div class="swatch"><div class="chip" style="background:rgba(212,175,55,0.30); border:1px solid rgba(212,175,55,0.4);"></div><div class="label">Gold Dim</div><div class="val">30% opacity</div></div>
+    <div class="swatch"><div class="chip" style="background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.2);"></div><div class="label">Gold Faint</div><div class="val">12% opacity</div></div>
+  </div>
+</div>
+<div class="group">
+  <div class="group-title">Maroon / Red</div>
+  <div class="row">
+    <div class="swatch"><div class="chip" style="background:#7a0000;"></div><div class="label">Red Dark</div><div class="val">#7a0000</div></div>
+    <div class="swatch"><div class="chip" style="background:#8b0000;"></div><div class="label">Red Mid</div><div class="val">#8b0000</div></div>
+    <div class="swatch"><div class="chip" style="background:#b80000;"></div><div class="label">Red Primary</div><div class="val">#b80000</div></div>
+    <div class="swatch"><div class="chip" style="background:#cc0000;"></div><div class="label">Red Bright</div><div class="val">#cc0000</div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(135deg,#7a0000,#b80000); border:1px solid rgba(212,175,55,0.4);"></div><div class="label">Btn Gradient</div><div class="val">gradient</div></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { margin: 0; padding: 16px; background: #3a0a00; font-family: 'Segoe UI', sans-serif; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .swatch { display: flex; flex-direction: column; gap: 4px; }
+  .chip { width: 90px; height: 48px; border-radius: 8px; }
+  .label { color: #d4af37; font-size: 10px; font-weight: 600; }
+  .val { color: rgba(255,220,170,0.6); font-size: 9px; }
+  .group-title { color: rgba(255,220,170,0.6); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="group-title">Text / Foreground</div>
+<div class="row">
+  <div class="swatch"><div class="chip" style="background:#fff8ee;"></div><div class="label">Text Primary</div><div class="val">#fff8ee</div></div>
+  <div class="swatch"><div class="chip" style="background:rgba(255,220,170,0.85);"></div><div class="label">Text Warm</div><div class="val">85% warm</div></div>
+  <div class="swatch"><div class="chip" style="background:rgba(255,220,170,0.70);"></div><div class="label">Text Muted</div><div class="val">70% warm</div></div>
+  <div class="swatch"><div class="chip" style="background:rgba(255,200,150,0.40);"></div><div class="label">Placeholder</div><div class="val">40% soft</div></div>
+  <div class="swatch"><div class="chip" style="background:#ffeebb;"></div><div class="label">Text Cream</div><div class="val">#ffeebb</div></div>
+</div>
+<div class="group-title">Backgrounds</div>
+<div class="row">
+  <div class="swatch"><div class="chip" style="background:rgba(90,22,5,0.80); border:1px solid rgba(212,175,55,0.3);"></div><div class="label">Card BG</div><div class="val">62% maroon</div></div>
+  <div class="swatch"><div class="chip" style="background:rgba(160,35,5,0.80); border:1px solid rgba(212,175,55,0.3);"></div><div class="label">Header BG</div><div class="val">65% red</div></div>
+  <div class="swatch"><div class="chip" style="background:rgba(115,18,5,0.90); border:1px solid rgba(212,175,55,0.3);"></div><div class="label">Sidebar BG</div><div class="val">82% maroon</div></div>
+  <div class="swatch"><div class="chip" style="background:rgba(90,22,5,0.70); border:1px solid rgba(212,175,55,0.35);"></div><div class="label">Input BG</div><div class="val">50% dark</div></div>
+</div>
+</body>
+</html>
