@@ -4,12 +4,22 @@ Django settings for jurnal_poc project.
 
 from pathlib import Path
 import os
+import configparser
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-$1*0rlj1yth(f7bp$yqzo+dni9%65_)0!l_v0xt+!hkww%-w9#'
+# Baca settings.ini (tidak masuk git — lihat .gitignore)
+_config = configparser.ConfigParser()
+_config_path = BASE_DIR / 'settings.ini'
+if not _config_path.exists():
+    raise FileNotFoundError(
+        f"File 'settings.ini' tidak ditemukan di {BASE_DIR}. "
+        "Salin settings.ini.example ke settings.ini lalu isi SECRET_KEY."
+    )
+_config.read(_config_path)
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+SECRET_KEY = _config['settings']['SECRET_KEY']
+DEBUG = _config.get('settings', 'DEBUG', fallback='False') == 'True'
 
 ALLOWED_HOSTS = [
     'unitest.my.id',
@@ -73,7 +83,11 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+     'OPTIONS': {'min_length': 8}},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 LANGUAGE_CODE = 'id'
