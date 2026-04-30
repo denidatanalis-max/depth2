@@ -35,7 +35,7 @@
                     <tr>
                         <th>Judul</th>
                         <th>Penulis</th>
-                        <th>Manager</th>
+                        <th>Leader</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -44,7 +44,7 @@
                     <tr>
                         <td><a href="{% url 'journal_detail' j.pk %}">{{ j.title }}</a></td>
                         <td>{{ j.author.user.get_full_name }}</td>
-                        <td>{{ j.author.manager.user.get_full_name }}</td>
+                        <td>{{ j.author.manager.user.get_full_name|default:"-" }}</td>
                         <td><a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Nilai</a></td>
                     </tr>
                     {% endfor %}

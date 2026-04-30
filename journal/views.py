@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.http import HttpResponseForbidden
 from django.utils import timezone
 from .models import Journal, JournalLog, JournalScore, JournalStatus, Role, UserProfile
-from .forms import JournalCreateForm, JournalUploadForm, ReviewForm, ScoringForm
+from .forms import JournalCreateForm, JournalUploadForm, JournalUploadWithAbstractForm, ReviewForm, ScoringForm
 
 
 def login_view(request):
@@ -17,6 +17,10 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
+            profile = get_profile(user)
+            if profile:
+                profile.session_key = request.session.session_key
+                profile.save(update_fields=['session_key'])
             return redirect('dashboard')
         messages.error(request, 'Username atau password salah.')
     return render(request, 'login.html')
@@ -28,24 +32,30 @@ def logout_view(request):
 
 
 def get_profile(user):
-    return UserProfile.objects.get(user=user)
+    try:
+        return UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        return None
 
 
-# --- Public views (no login) ---
+# --- Publikasi (hanya user terdaftar) ---
 
+@login_required
 def public_journals(request):
-    """Halaman publik: daftar jurnal yang sudah dipublikasikan."""
     journals = Journal.objects.filter(status=JournalStatus.PUBLISHED).order_by('-published_at')
-    return render(request, 'public/journal_list.html', {'journals': journals})
+    profile = get_profile(request.user)
+    return render(request, 'public/journal_list.html', {'journals': journals, 'profile': profile})
 
 
+@login_required
 def public_journal_detail(request, pk):
-    """Halaman publik: detail jurnal yang sudah dipublikasikan."""
     journal = get_object_or_404(Journal, pk=pk, status=JournalStatus.PUBLISHED)
     score = journal.latest_score
+    profile = get_profile(request.user)
     return render(request, 'public/journal_detail.html', {
         'journal': journal,
         'score': score,
+        'profile': profile,
     })
 
 
@@ -55,11 +65,16 @@ def public_journal_detail(request, pk):
 def dashboard(request):
     profile = get_profile(request.user)
 
+    if profile is None:
+        return render(request, 'dashboard/default.html', {'profile': None})
+
     if profile.is_supervisor:
         journals = Journal.objects.filter(author=profile)
+        pending_count = journals.filter(status=JournalStatus.SUBMITTED).count()
         return render(request, 'dashboard/supervisor.html', {
             'profile': profile,
             'journals': journals,
+            'pending_count': pending_count,
         })
 
     elif profile.is_manager:
@@ -79,13 +94,13 @@ def dashboard(request):
         })
 
     elif profile.is_admin:
-        uploaded = Journal.objects.filter(status=JournalStatus.UPLOADED)
-        under_review = Journal.objects.filter(status=JournalStatus.UNDER_REVIEW)
+        to_collect = Journal.objects.filter(status=JournalStatus.UNDER_REVIEW)
+        to_publish = Journal.objects.filter(status=JournalStatus.RECOMMENDED)
         all_journals = Journal.objects.exclude(status=JournalStatus.DRAFT)
         return render(request, 'dashboard/admin.html', {
             'profile': profile,
-            'uploaded': uploaded,
-            'under_review': under_review,
+            'to_collect': to_collect,
+            'to_publish': to_publish,
             'all_journals': all_journals,
         })
 
@@ -93,6 +108,7 @@ def dashboard(request):
         pending_scoring = Journal.objects.filter(status=JournalStatus.SCORING)
         scored = Journal.objects.filter(
             status__in=[
+                JournalStatus.UNDER_RECOMMENDATION,
                 JournalStatus.RECOMMENDED,
                 JournalStatus.NOT_RECOMMENDED,
                 JournalStatus.SCORE_REVISION,
@@ -103,6 +119,17 @@ def dashboard(request):
             'profile': profile,
             'pending_scoring': pending_scoring,
             'scored': scored,
+        })
+
+    elif profile.is_recommendation:
+        pending = Journal.objects.filter(status=JournalStatus.UNDER_RECOMMENDATION)
+        reviewed = Journal.objects.filter(
+            status__in=[JournalStatus.RECOMMENDED, JournalStatus.NOT_RECOMMENDED, JournalStatus.PUBLISHED]
+        )
+        return render(request, 'dashboard/recommendation.html', {
+            'profile': profile,
+            'pending': pending,
+            'reviewed': reviewed,
         })
 
     elif profile.is_superadmin:
@@ -125,7 +152,7 @@ def dashboard(request):
 def journal_create(request):
     profile = get_profile(request.user)
     if not profile.is_supervisor:
-        return HttpResponseForbidden('Hanya Supervisor yang bisa membuat jurnal.')
+        return HttpResponseForbidden('Hanya Writer yang bisa membuat jurnal.')
 
     if request.method == 'POST':
         form = JournalCreateForm(request.POST)
@@ -221,16 +248,16 @@ def journal_submit(request, pk):
         messages.error(request, 'Jurnal tidak bisa diajukan pada status ini.')
         return redirect('journal_detail', pk=pk)
     if not profile.manager:
-        messages.error(request, 'Anda belum memiliki manager. Hubungi admin.')
+        messages.error(request, 'Anda belum memiliki leader. Hubungi admin.')
         return redirect('journal_detail', pk=pk)
 
     journal.status = JournalStatus.SUBMITTED
     journal.save()
     JournalLog.objects.create(
         journal=journal, action='Diajukan', by_user=profile,
-        note=f'Diajukan ke Manager: {profile.manager.user.get_full_name()}',
+        note=f'Diajukan ke Leader: {profile.manager.user.get_full_name()}',
     )
-    messages.success(request, 'Jurnal berhasil diajukan ke Manager untuk persetujuan.')
+    messages.success(request, 'Jurnal berhasil diajukan ke Leader untuk persetujuan.')
     return redirect('journal_detail', pk=pk)
 
 
@@ -243,14 +270,21 @@ def journal_upload(request, pk):
     if not profile.is_supervisor or journal.author != profile:
         return HttpResponseForbidden('Tidak diizinkan.')
     if journal.status != JournalStatus.APPROVED:
-        messages.error(request, 'Jurnal hanya bisa diupload setelah disetujui Manager.')
+        messages.error(request, 'Jurnal hanya bisa diupload setelah disetujui Leader.')
         return redirect('journal_detail', pk=pk)
 
     if request.method == 'POST':
-        form = JournalUploadForm(request.POST, request.FILES, instance=journal)
+        old_abstract = journal.abstract
+        form = JournalUploadWithAbstractForm(request.POST, request.FILES, instance=journal)
         if form.is_valid():
             journal = form.save(commit=False)
             journal.status = JournalStatus.UPLOADED
+            if form.cleaned_data['abstract'] != old_abstract:
+                journal.abstract_updated_at = timezone.now()
+                JournalLog.objects.create(
+                    journal=journal, action='Ringkasan Diperbarui', by_user=profile,
+                    note='Ringkasan diperbarui saat upload file.',
+                )
             journal.save()
             JournalLog.objects.create(
                 journal=journal, action='File Diupload', by_user=profile,
@@ -259,7 +293,7 @@ def journal_upload(request, pk):
             messages.success(request, 'File jurnal berhasil diupload. Menunggu verifikasi Admin.')
             return redirect('journal_detail', pk=pk)
     else:
-        form = JournalUploadForm(instance=journal)
+        form = JournalUploadWithAbstractForm(instance=journal)
     return render(request, 'journal/upload.html', {
         'form': form, 'journal': journal, 'profile': profile,
     })
@@ -285,8 +319,8 @@ def manager_approve(request, pk):
         journal.status = JournalStatus.APPROVED
         journal.save()
         JournalLog.objects.create(
-            journal=journal, action='Disetujui Manager', by_user=profile,
-            note=note or 'Jurnal disetujui oleh Manager.',
+            journal=journal, action='Disetujui Leader', by_user=profile,
+            note=note or 'Jurnal disetujui oleh Leader.',
         )
         messages.success(request, 'Jurnal berhasil disetujui.')
     return redirect('journal_detail', pk=pk)
@@ -311,85 +345,88 @@ def manager_reject(request, pk):
         journal.revision_count += 1
         journal.save()
         JournalLog.objects.create(
-            journal=journal, action='Ditolak Manager', by_user=profile,
+            journal=journal, action='Ditolak Leader', by_user=profile,
             note=note or 'Jurnal ditolak, perlu revisi.',
         )
-        messages.warning(request, 'Jurnal ditolak dan dikembalikan ke Supervisor untuk revisi.')
+        messages.warning(request, 'Jurnal ditolak dan dikembalikan ke Writer untuk revisi.')
+    return redirect('journal_detail', pk=pk)
+
+
+# --- Manager file review (after supervisor uploads PDF) ---
+
+@login_required
+def manager_approve_file(request, pk):
+    """Manager menyetujui file PDF yang diupload → kirim ke Admin."""
+    profile = get_profile(request.user)
+    journal = get_object_or_404(Journal, pk=pk)
+
+    if not profile.is_manager or journal.author.manager != profile:
+        return HttpResponseForbidden('Tidak diizinkan.')
+    if journal.status != JournalStatus.UPLOADED:
+        messages.error(request, 'Jurnal tidak dalam status menunggu review file.')
+        return redirect('journal_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        note = form.cleaned_data.get('note', '') if form.is_valid() else ''
+        journal.status = JournalStatus.UNDER_REVIEW
+        journal.save()
+        JournalLog.objects.create(
+            journal=journal, action='File Disetujui Leader', by_user=profile,
+            note=note or 'File jurnal disetujui Leader, dikirim ke Admin.',
+        )
+        messages.success(request, 'File jurnal disetujui dan dikirim ke Admin.')
+    return redirect('journal_detail', pk=pk)
+
+
+@login_required
+def manager_reject_file(request, pk):
+    """Manager menolak file PDF → balik ke Writer untuk upload ulang."""
+    profile = get_profile(request.user)
+    journal = get_object_or_404(Journal, pk=pk)
+
+    if not profile.is_manager or journal.author.manager != profile:
+        return HttpResponseForbidden('Tidak diizinkan.')
+    if journal.status != JournalStatus.UPLOADED:
+        messages.error(request, 'Jurnal tidak dalam status menunggu review file.')
+        return redirect('journal_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        note = form.cleaned_data.get('note', '') if form.is_valid() else ''
+        journal.status = JournalStatus.APPROVED
+        journal.revision_count += 1
+        journal.save()
+        JournalLog.objects.create(
+            journal=journal, action='File Ditolak Leader', by_user=profile,
+            note=note or 'File jurnal ditolak, Writer diminta upload ulang.',
+        )
+        messages.warning(request, 'File jurnal ditolak. Writer perlu upload ulang.')
     return redirect('journal_detail', pk=pk)
 
 
 # --- Admin views ---
 
 @login_required
-def admin_start_review(request, pk):
-    """Step 04/05: Admin starts reviewing the uploaded journal."""
-    profile = get_profile(request.user)
-    journal = get_object_or_404(Journal, pk=pk)
-
-    if not profile.is_admin:
-        return HttpResponseForbidden('Tidak diizinkan.')
-    if journal.status != JournalStatus.UPLOADED:
-        messages.error(request, 'Jurnal tidak dalam status siap diverifikasi.')
-        return redirect('journal_detail', pk=pk)
-
-    journal.status = JournalStatus.UNDER_REVIEW
-    journal.save()
-    JournalLog.objects.create(
-        journal=journal, action='Mulai Verifikasi', by_user=profile,
-        note='Admin mulai memverifikasi jurnal.',
-    )
-    messages.info(request, 'Jurnal sedang diverifikasi.')
-    return redirect('journal_detail', pk=pk)
-
-
-@login_required
-def admin_verify(request, pk):
-    """Step 05: Admin verifies the journal - passes to scoring."""
+def admin_collect(request, pk):
+    """Admin mengumpulkan jurnal dan mengirim ke Scoring."""
     profile = get_profile(request.user)
     journal = get_object_or_404(Journal, pk=pk)
 
     if not profile.is_admin:
         return HttpResponseForbidden('Tidak diizinkan.')
     if journal.status != JournalStatus.UNDER_REVIEW:
-        messages.error(request, 'Jurnal tidak dalam status sedang diverifikasi.')
+        messages.error(request, 'Jurnal tidak dalam status siap dikumpulkan.')
         return redirect('journal_detail', pk=pk)
 
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        note = form.cleaned_data.get('note', '') if form.is_valid() else ''
         journal.status = JournalStatus.SCORING
         journal.save()
         JournalLog.objects.create(
-            journal=journal, action='Diverifikasi Admin', by_user=profile,
-            note=note or 'Jurnal lolos verifikasi, dikirim ke Scoring.',
+            journal=journal, action='Dikumpulkan Admin → Scoring', by_user=profile,
+            note='Admin mengumpulkan jurnal dan mengirim ke Scoring untuk penilaian.',
         )
-        messages.success(request, 'Jurnal diverifikasi dan dikirim ke Scoring untuk penilaian.')
-    return redirect('journal_detail', pk=pk)
-
-
-@login_required
-def admin_request_revision(request, pk):
-    """Step 04 loop: Admin sends journal back for revision."""
-    profile = get_profile(request.user)
-    journal = get_object_or_404(Journal, pk=pk)
-
-    if not profile.is_admin:
-        return HttpResponseForbidden('Tidak diizinkan.')
-    if journal.status not in (JournalStatus.UPLOADED, JournalStatus.UNDER_REVIEW):
-        messages.error(request, 'Jurnal tidak bisa dikembalikan pada status ini.')
-        return redirect('journal_detail', pk=pk)
-
-    if request.method == 'POST':
-        form = ReviewForm(request.POST)
-        note = form.cleaned_data.get('note', '') if form.is_valid() else ''
-        journal.status = JournalStatus.REVISION_NEEDED
-        journal.revision_count += 1
-        journal.save()
-        JournalLog.objects.create(
-            journal=journal, action='Perlu Revisi', by_user=profile,
-            note=note or 'Jurnal dikembalikan untuk revisi.',
-        )
-        messages.warning(request, 'Jurnal dikembalikan ke Supervisor untuk revisi.')
+        messages.success(request, 'Jurnal berhasil dikirim ke Scoring.')
     return redirect('journal_detail', pk=pk)
 
 
@@ -417,9 +454,9 @@ def scoring_submit(request, pk):
 
             rec = score.recommendation
             if rec == JournalScore.Recommendation.RECOMMEND:
-                journal.status = JournalStatus.RECOMMENDED
-                action = 'Direkomendasikan'
-                msg = f'Skor: {score.total_score}/400. Rekomendasi: Layak Dipublikasikan.'
+                journal.status = JournalStatus.UNDER_RECOMMENDATION
+                action = 'Dikirim ke Tim Rekomendasi'
+                msg = f'Skor: {score.total_score}/400. Hasil Scoring: Layak — menunggu Tim Rekomendasi.'
             elif rec == JournalScore.Recommendation.REVISION:
                 journal.status = JournalStatus.SCORE_REVISION
                 journal.revision_count += 1
@@ -444,18 +481,70 @@ def scoring_submit(request, pk):
     return redirect('journal_detail', pk=pk)
 
 
+# --- Recommendation views ---
+
+@login_required
+def recommendation_approve(request, pk):
+    """Tim Rekomendasi menyetujui → RECOMMENDED."""
+    profile = get_profile(request.user)
+    journal = get_object_or_404(Journal, pk=pk)
+
+    if not profile.is_recommendation:
+        return HttpResponseForbidden('Tidak diizinkan.')
+    if journal.status != JournalStatus.UNDER_RECOMMENDATION:
+        messages.error(request, 'Jurnal tidak dalam status menunggu rekomendasi.')
+        return redirect('journal_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        note = form.cleaned_data.get('note', '') if form.is_valid() else ''
+        journal.status = JournalStatus.RECOMMENDED
+        journal.save()
+        JournalLog.objects.create(
+            journal=journal, action='Disetujui Tim Rekomendasi', by_user=profile,
+            note=note or 'Tim Rekomendasi menyetujui jurnal untuk dipublikasikan.',
+        )
+        messages.success(request, 'Jurnal disetujui Tim Rekomendasi. Admin dapat mempublikasikan.')
+    return redirect('journal_detail', pk=pk)
+
+
+@login_required
+def recommendation_reject(request, pk):
+    """Tim Rekomendasi menolak → NOT_RECOMMENDED."""
+    profile = get_profile(request.user)
+    journal = get_object_or_404(Journal, pk=pk)
+
+    if not profile.is_recommendation:
+        return HttpResponseForbidden('Tidak diizinkan.')
+    if journal.status != JournalStatus.UNDER_RECOMMENDATION:
+        messages.error(request, 'Jurnal tidak dalam status menunggu rekomendasi.')
+        return redirect('journal_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        note = form.cleaned_data.get('note', '') if form.is_valid() else ''
+        journal.status = JournalStatus.NOT_RECOMMENDED
+        journal.save()
+        JournalLog.objects.create(
+            journal=journal, action='Ditolak Tim Rekomendasi', by_user=profile,
+            note=note or 'Tim Rekomendasi tidak merekomendasikan jurnal ini.',
+        )
+        messages.warning(request, 'Jurnal tidak direkomendasikan oleh Tim Rekomendasi.')
+    return redirect('journal_detail', pk=pk)
+
+
 # --- Publication view (Admin/SuperAdmin) ---
 
 @login_required
 def publish_journal(request, pk):
-    """Step 09: Publish a recommended journal."""
+    """Admin/SuperAdmin mempublikasikan jurnal (dari RECOMMENDED atau UNDER_RECOMMENDATION)."""
     profile = get_profile(request.user)
     journal = get_object_or_404(Journal, pk=pk)
 
     if not (profile.is_admin or profile.is_superadmin):
         return HttpResponseForbidden('Tidak diizinkan.')
     if journal.status != JournalStatus.RECOMMENDED:
-        messages.error(request, 'Hanya jurnal yang direkomendasikan yang bisa dipublikasikan.')
+        messages.error(request, 'Jurnal hanya bisa dipublikasikan setelah disetujui Tim Rekomendasi.')
         return redirect('journal_detail', pk=pk)
 
     if request.method == 'POST':

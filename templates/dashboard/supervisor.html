@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Dashboard Supervisor{% endblock %}
+{% block title %}Dashboard Writer{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4>Dashboard Supervisor</h4>
+        <h4>Dashboard Writer</h4>
         <p class="text-muted mb-0">Selamat datang, {{ user.get_full_name|default:user.username }}
             {% if profile.manager %}
-            <span class="text-muted">| Manager: <strong>{{ profile.manager.user.get_full_name }}</strong></span>
+            <span class="text-muted">| Leader: <strong>{{ profile.manager.user.get_full_name }}</strong></span>
             {% endif %}
         </p>
     </div>
@@ -26,7 +26,7 @@
     <div class="col-md-3">
         <div class="card stat-card orange p-3">
             <div class="text-muted small">Menunggu Approval</div>
-            <h3 class="mb-0">{{ journals|dictsort:"status"|length }}</h3>
+            <h3 class="mb-0">{{ pending_count }}</h3>
         </div>
     </div>
     <div class="col-md-3">

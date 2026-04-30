@@ -2,22 +2,22 @@
 {% block title %}Dashboard Admin{% endblock %}
 {% block content %}
 <div class="mb-4">
-    <h4>Dashboard Admin (Helpdesk)</h4>
-    <p class="text-muted mb-0">Monitoring & Verifikasi Jurnal</p>
+    <h4 style="color:#d4af37;"><i class="bi bi-inbox"></i> Dashboard Admin</h4>
+    <p class="text-muted mb-0">Pengumpulan &amp; Publikasi Jurnal</p>
 </div>
 
 <!-- Stats -->
 <div class="row mb-4">
     <div class="col-md-4">
         <div class="card stat-card orange p-3">
-            <div class="text-muted small">Jurnal Baru (Perlu Verifikasi)</div>
-            <h3 class="mb-0">{{ uploaded.count }}</h3>
+            <div class="text-muted small">Siap Dikirim ke Scoring</div>
+            <h3 class="mb-0">{{ to_collect.count }}</h3>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card stat-card blue p-3">
-            <div class="text-muted small">Sedang Diverifikasi</div>
-            <h3 class="mb-0">{{ under_review.count }}</h3>
+            <div class="text-muted small">Siap Dipublikasikan</div>
+            <h3 class="mb-0">{{ to_publish.count }}</h3>
         </div>
     </div>
     <div class="col-md-4">
@@ -28,33 +28,70 @@
     </div>
 </div>
 
-<!-- Needs verification -->
-{% if uploaded %}
+<!-- To collect: file disetujui Manager, kirim ke Scoring -->
+{% if to_collect %}
 <div class="card mb-4">
-    <div class="card-header bg-warning bg-opacity-10">
-        <h5 class="mb-0 text-warning"><i class="bi bi-inbox"></i> Jurnal Baru — Perlu Verifikasi</h5>
+    <div class="card-header" style="background:rgba(0,60,80,0.35);border-bottom:1px solid rgba(100,200,255,0.2);">
+        <h5 class="mb-0" style="color:#a0d8ff;"><i class="bi bi-send-fill"></i> Jurnal — Kirim ke Scoring</h5>
     </div>
     <div class="card-body p-0">
         <table class="table table-hover mb-0">
-            <thead class="table-light">
+            <thead>
                 <tr>
                     <th>Judul</th>
                     <th>Penulis</th>
-                    <th>Manager</th>
-                    <th>Diupload</th>
+                    <th>Leader</th>
+                    <th>Terakhir Diubah</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                {% for j in uploaded %}
+                {% for j in to_collect %}
                 <tr>
-                    <td><a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none fw-medium">{{ j.title }}</a></td>
+                    <td><a href="{% url 'journal_detail' j.pk %}" class="fw-medium" style="color:#a0d8ff;text-decoration:none;">{{ j.title }}</a></td>
                     <td>{{ j.author.user.get_full_name }}</td>
                     <td>{{ j.author.manager.user.get_full_name|default:"-" }}</td>
                     <td class="text-muted small">{{ j.updated_at|date:"d M Y H:i" }}</td>
                     <td>
                         <a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-search"></i> Review
+                            <i class="bi bi-send"></i> Proses
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- To publish -->
+{% if to_publish %}
+<div class="card mb-4">
+    <div class="card-header" style="background:rgba(0,60,20,0.3);border-bottom:1px solid rgba(77,255,140,0.2);">
+        <h5 class="mb-0" style="color:#a8ffcc;"><i class="bi bi-journal-check"></i> Jurnal — Siap Dipublikasikan</h5>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for j in to_publish %}
+                <tr>
+                    <td><a href="{% url 'journal_detail' j.pk %}" class="fw-medium" style="color:#a8ffcc;text-decoration:none;">{{ j.title }}</a></td>
+                    <td>{{ j.author.user.get_full_name }}</td>
+                    <td>
+                        <span class="badge bg-{{ j.status_badge_class }}">{{ j.get_status_display }}</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-journal-check"></i> Publikasikan
                         </a>
                     </td>
                 </tr>
@@ -67,12 +104,12 @@
 
 <!-- All journals -->
 <div class="card">
-    <div class="card-header bg-white">
+    <div class="card-header">
         <h5 class="mb-0"><i class="bi bi-journal-text"></i> Monitoring Semua Jurnal</h5>
     </div>
     <div class="card-body p-0">
         <table class="table table-hover mb-0">
-            <thead class="table-light">
+            <thead>
                 <tr>
                     <th>Judul</th>
                     <th>Penulis</th>
@@ -85,13 +122,13 @@
             <tbody>
                 {% for j in all_journals %}
                 <tr>
-                    <td><a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none">{{ j.title }}</a></td>
+                    <td><a href="{% url 'journal_detail' j.pk %}" style="color:#d4af37;text-decoration:none;">{{ j.title }}</a></td>
                     <td>{{ j.author.user.get_full_name }}</td>
                     <td><span class="badge bg-{{ j.status_badge_class }}">{{ j.get_status_display }}</span></td>
                     <td>{{ j.revision_count }}</td>
                     <td class="text-muted small">{{ j.updated_at|date:"d M Y H:i" }}</td>
                     <td>
-                        <a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-outline-primary btn-sm">
+                        <a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-outline-primary">
                             <i class="bi bi-eye"></i>
                         </a>
                     </td>

@@ -97,18 +97,34 @@ class Command(BaseCommand):
             user=sc_user, defaults={'role': Role.SCORING},
         )
 
+        # Recommendation team (2 orang)
+        for i, (first, last) in enumerate([
+            ('Dr.', 'Hartono'),
+            ('Dr.', 'Melinda'),
+        ], start=1):
+            r_user, _ = User.objects.get_or_create(
+                username=f'recom{i}',
+                defaults={'first_name': first, 'last_name': last},
+            )
+            r_user.set_password(PASSWORD)
+            r_user.save()
+            UserProfile.objects.get_or_create(
+                user=r_user, defaults={'role': Role.RECOMMENDATION},
+            )
+
         self.stdout.write(self.style.SUCCESS(
             '\nDemo data berhasil dibuat!\n\n'
-            'Hierarchy:\n'
-            '  Manager 1 (Budi Santoso) — manager1\n'
-            '    ├── Supervisor 1 (Andi Pratama) — supervisor1\n'
-            '    ├── Supervisor 2 (Dewi Lestari) — supervisor2\n'
-            '    └── Supervisor 3 (Fajar Nugroho) — supervisor3\n'
-            '  Manager 2 (Siti Rahma) — manager2\n'
-            '    ├── Supervisor 4 (Rina Wijaya) — supervisor4\n'
-            '    └── Supervisor 5 (Hadi Kurniawan) — supervisor5\n'
-            '  Admin (Yuni Astuti) — admin1\n'
-            '  Scoring (Prof. Reviewer) — scoring1\n'
-            '  Super Admin — superadmin\n\n'
-            'Password semua: demo1234'
+            'Akun tersedia:\n'
+            '  superadmin  / demo1234  (Super Admin)\n'
+            '  manager1    / demo1234  (Leader - Budi Santoso)\n'
+            '  manager2    / demo1234  (Leader - Siti Rahma)\n'
+            '  supervisor1 / demo1234  (Writer - Andi Pratama)\n'
+            '  supervisor2 / demo1234  (Writer - Dewi Lestari)\n'
+            '  supervisor3 / demo1234  (Writer - Fajar Nugroho)\n'
+            '  supervisor4 / demo1234  (Writer - Rina Wijaya)\n'
+            '  supervisor5 / demo1234  (Writer - Hadi Kurniawan)\n'
+            '  admin1      / demo1234  (Admin/Helpdesk)\n'
+            '  scoring1    / demo1234  (Scoring/Penilai)\n'
+            '  recom1      / demo1234  (Tim Rekomendasi - Dr. Hartono)\n'
+            '  recom2      / demo1234  (Tim Rekomendasi - Dr. Melinda)\n'
         ))
