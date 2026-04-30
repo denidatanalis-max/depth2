@@ -64,7 +64,7 @@
     <!-- Main content -->
     <div class="col-md-8">
         <div class="card mb-4">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ journal.title }}</h5>
                 <span class="badge bg-{{ journal.status_badge_class }} badge-status fs-6">{{ journal.get_status_display }}</span>
             </div>
@@ -112,8 +112,8 @@
         <!-- Score display -->
         {% if score %}
         <div class="card mb-4">
-            <div class="card-header bg-success bg-opacity-10">
-                <h6 class="mb-0"><i class="bi bi-star-fill text-warning"></i> Hasil Penilaian (Scoring)</h6>
+            <div class="card-header" style="background:rgba(0,60,20,0.35);border-bottom:1px solid rgba(77,255,140,0.2);">
+                <h6 class="mb-0" style="color:#a8ffcc;"><i class="bi bi-star-fill" style="color:#f5d877;"></i> Hasil Penilaian (Scoring)</h6>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -151,8 +151,8 @@
                     </div>
                 </div>
                 {% if score.note %}
-                <div class="alert alert-light mt-3 mb-0 small">
-                    <strong>Catatan Penilai:</strong> {{ score.note }}
+                <div class="mt-3 mb-0 small p-2" style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);border-radius:8px;color:rgba(255,220,170,0.75);">
+                    <strong style="color:#d4af37;">Catatan Penilai:</strong> {{ score.note }}
                 </div>
                 {% endif %}
             </div>
@@ -161,7 +161,7 @@
 
         <!-- Activity Log -->
         <div class="card">
-            <div class="card-header bg-dark">
+            <div class="card-header">
                 <h6 class="mb-0"><i class="bi bi-clock-history"></i> Riwayat Aktivitas</h6>
             </div>
             <div class="card-body p-0">
@@ -186,8 +186,8 @@
         <!-- Supervisor actions -->
         {% if profile.is_supervisor and journal.author == profile %}
         <div class="card mb-3">
-            <div class="card-header bg-primary bg-opacity-10">
-                <h6 class="mb-0 text-primary"><i class="bi bi-gear"></i> Aksi Writer</h6>
+            <div class="card-header" style="background:rgba(0,40,80,0.35);border-bottom:1px solid rgba(100,180,255,0.2);">
+                <h6 class="mb-0" style="color:#a0d8ff;"><i class="bi bi-gear"></i> Aksi Writer</h6>
             </div>
             <div class="card-body">
                 {% if journal.status == 'draft' or journal.status == 'rejected' or journal.status == 'revision_needed' or journal.status == 'score_revision' %}
@@ -549,8 +549,8 @@
         <!-- Scoring actions -->
         {% if profile.is_scoring and journal.status == 'scoring' %}
         <div class="card mb-3">
-            <div class="card-header bg-success bg-opacity-10">
-                <h6 class="mb-0 text-success"><i class="bi bi-star"></i> Penilaian Scoring (Step 06/07/08)</h6>
+            <div class="card-header" style="background:rgba(0,60,20,0.35);border-bottom:1px solid rgba(77,255,140,0.2);">
+                <h6 class="mb-0" style="color:#a8ffcc;"><i class="bi bi-star"></i> Penilaian Scoring (Step 06/07/08)</h6>
             </div>
             <div class="card-body">
                 <form method="post" action="{% url 'scoring_submit' journal.pk %}">
@@ -595,8 +595,8 @@
         <!-- SuperAdmin publish button -->
         {% if profile.is_superadmin and journal.status == 'recommended' %}
         <div class="card mb-3">
-            <div class="card-header bg-dark text-white">
-                <h6 class="mb-0"><i class="bi bi-journal-check"></i> Publikasi</h6>
+            <div class="card-header" style="background:rgba(80,50,0,0.4);border-bottom:1px solid rgba(212,175,55,0.25);">
+                <h6 class="mb-0" style="color:#d4af37;"><i class="bi bi-journal-check"></i> Publikasi</h6>
             </div>
             <div class="card-body">
                 <form method="post" action="{% url 'publish_journal' journal.pk %}">

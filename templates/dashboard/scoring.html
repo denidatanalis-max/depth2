@@ -6,27 +6,23 @@
 
 <div class="row mb-4">
     <div class="col-md-6">
-        <div class="card border-start border-warning border-4">
-            <div class="card-body">
-                <small class="text-muted">Menunggu Penilaian</small>
-                <h3>{{ pending_scoring|length }}</h3>
-            </div>
+        <div class="card stat-card orange p-3">
+            <div class="text-muted small">Menunggu Penilaian</div>
+            <h3 class="mb-0">{{ pending_scoring|length }}</h3>
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card border-start border-success border-4">
-            <div class="card-body">
-                <small class="text-muted">Sudah Dinilai</small>
-                <h3>{{ scored|length }}</h3>
-            </div>
+        <div class="card stat-card green p-3">
+            <div class="text-muted small">Sudah Dinilai</div>
+            <h3 class="mb-0">{{ scored|length }}</h3>
         </div>
     </div>
 </div>
 
 {% if pending_scoring %}
 <div class="card mb-4">
-    <div class="card-header bg-warning text-dark">
-        <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> Jurnal Menunggu Penilaian</h5>
+    <div class="card-header" style="background:rgba(180,120,0,0.25);border-bottom:1px solid rgba(212,175,55,0.25);">
+        <h5 class="mb-0" style="color:#d4af37;"><i class="bi bi-clipboard-check"></i> Jurnal Menunggu Penilaian</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">

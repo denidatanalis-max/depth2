@@ -2,7 +2,7 @@
 {% block title %}Dashboard Leader{% endblock %}
 {% block content %}
 <div class="mb-4">
-    <h4>Dashboard Leader</h4>
+    <h4 style="color:#d4af37;"><i class="bi bi-people-fill"></i> Dashboard Leader</h4>
     <p class="text-muted mb-0">Selamat datang, {{ user.get_full_name|default:user.username }} | {{ supervisor_count }} Writer di bawah Anda</p>
 </div>
 
@@ -65,13 +65,13 @@
 
 <!-- All Journals -->
 <div class="card">
-    <div class="card-header bg-white">
+    <div class="card-header">
         <h5 class="mb-0"><i class="bi bi-journal-text"></i> Semua Jurnal Writer</h5>
     </div>
     <div class="card-body p-0">
         {% if all_journals %}
         <table class="table table-hover mb-0">
-            <thead class="table-light">
+            <thead>
                 <tr>
                     <th>Judul</th>
                     <th>Penulis</th>
