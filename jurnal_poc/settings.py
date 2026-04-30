@@ -16,7 +16,7 @@ ALLOWED_HOSTS = [
     'www.unitest.my.id',
     'localhost',
     '127.0.0.1',
-    '192.168.1.1'
+    '192.168.1.1',
 ]
 
 INSTALLED_APPS = [
@@ -42,9 +42,8 @@ MIDDLEWARE = [
     'journal.middleware.SingleSessionMiddleware',
 ]
 
-# Session: auto logout 30 menit tidak aktif
-SESSION_COOKIE_AGE = 30 * 60  # 1800 detik
-SESSION_SAVE_EVERY_REQUEST = True  # reset timer setiap ada request
+SESSION_COOKIE_AGE = 30 * 60
+SESSION_SAVE_EVERY_REQUEST = True
 
 ROOT_URLCONF = 'jurnal_poc.urls'
 
@@ -82,7 +81,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+_STATIC_SRC = BASE_DIR / 'static'
+STATICFILES_DIRS = [_STATIC_SRC] if _STATIC_SRC.exists() else []
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
