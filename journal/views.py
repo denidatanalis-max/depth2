@@ -10,8 +10,6 @@ from .forms import JournalCreateForm, JournalUploadForm, JournalUploadWithAbstra
 
 def login_view(request):
     if request.user.is_authenticated:
-        if request.user.is_superuser:
-            return redirect('/admin/')
         return redirect('dashboard')
     if request.method == 'POST':
         username = request.POST.get('username')

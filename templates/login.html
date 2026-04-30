@@ -15,11 +15,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f0ede8;
+            background-image: url("{% static 'img/background_login2.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             font-family: 'Segoe UI', sans-serif;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 0, 0, 0.45);
+            z-index: 0;
         }
 
         .login-box {
+            position: relative;
+            z-index: 1;
             display: flex;
             width: 860px;
             max-width: 95vw;
@@ -27,22 +42,23 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow:
-                0 20px 60px rgba(80, 20, 0, 0.18),
-                0 4px 16px rgba(0, 0, 0, 0.1);
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(212, 175, 55, 0.25);
         }
 
         /* ── Panel kiri — brand ── */
         .panel-left {
             width: 42%;
-            background:
-                linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)),
-                url("{% static 'img/background_login2.png' %}");
+            background: linear-gradient(160deg, rgba(80, 0, 0, 0.80) 0%, rgba(20, 0, 0, 0.88) 100%);
+            border-right: 1px solid rgba(212, 175, 55, 0.25);
             padding: 3rem 2.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
 
         .panel-left::after {
@@ -53,7 +69,7 @@
             width: 220px;
             height: 220px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(212, 175, 55, 0.05);
         }
 
         .panel-left::before {
@@ -64,7 +80,7 @@
             width: 160px;
             height: 160px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(212, 175, 55, 0.04);
         }
 
         .brand-area {
@@ -74,13 +90,14 @@
 
         .brand-icon {
             font-size: 3rem;
-            color: #f5d877;
+            color: #d4af37;
             display: block;
             margin-bottom: 1rem;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
         }
 
         .brand-title {
-            color: #ffffff;
+            color: #fff8ee;
             font-size: 1.75rem;
             font-weight: 700;
             letter-spacing: 1px;
@@ -88,7 +105,7 @@
         }
 
         .brand-subtitle {
-            color: rgba(255, 235, 180, 0.75);
+            color: rgba(255, 220, 170, 0.75);
             font-size: 0.875rem;
             margin-top: 0.5rem;
             line-height: 1.5;
@@ -97,16 +114,18 @@
         .panel-tagline {
             position: relative;
             z-index: 1;
-            color: rgba(255, 220, 150, 0.55);
+            color: rgba(255, 220, 150, 0.60);
             font-size: 0.75rem;
-            border-top: 1px solid rgba(255, 220, 150, 0.2);
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
             padding-top: 1rem;
         }
 
         /* ── Panel kanan — form ── */
         .panel-right {
             flex: 1;
-            background: #ffffff;
+            background: rgba(25, 5, 0, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             padding: 3rem 2.5rem;
             display: flex;
             flex-direction: column;
@@ -114,20 +133,20 @@
         }
 
         .form-heading {
-            color: #1a0a00;
+            color: #d4af37;
             font-size: 1.35rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
         }
 
         .form-subheading {
-            color: #9a7a5a;
+            color: rgba(255, 220, 170, 0.65);
             font-size: 0.85rem;
             margin-bottom: 2rem;
         }
 
         .form-label {
-            color: #4a2e10;
+            color: rgba(255, 220, 170, 0.85);
             font-size: 0.82rem;
             font-weight: 600;
             margin-bottom: 0.35rem;
@@ -136,50 +155,51 @@
         }
 
         .input-group-text {
-            background: #fdf8f0;
-            border: 1.5px solid #e8d8c0;
+            background: rgba(100, 0, 0, 0.45);
+            border: 1px solid rgba(212, 175, 55, 0.35);
             border-right: none;
-            color: #8b4513;
+            color: #d4af37;
         }
 
         .form-control {
-            background: #fdf8f0;
-            border: 1.5px solid #e8d8c0;
+            background: rgba(35, 5, 0, 0.40);
+            border: 1px solid rgba(212, 175, 55, 0.35);
             border-left: none;
-            color: #1a0a00;
+            color: #fff8ee;
             padding: 0.6rem 0.85rem;
         }
 
-        .form-control::placeholder { color: #c8b090; }
+        .form-control::placeholder { color: rgba(255, 200, 150, 0.40); }
 
         .form-control:focus {
-            background: #fff;
-            border-color: #c8880a;
-            box-shadow: 0 0 0 3px rgba(200, 136, 10, 0.12);
-            color: #1a0a00;
+            background: rgba(40, 5, 0, 0.50);
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+            color: #fff8ee;
         }
 
         .input-group:focus-within .input-group-text {
-            border-color: #c8880a;
-            color: #8b0000;
+            border-color: #d4af37;
+            color: #f0c84a;
         }
 
         .btn-login {
             background: linear-gradient(135deg, #7a0000, #a81500);
-            border: none;
-            color: #fff;
+            border: 1px solid rgba(212, 175, 55, 0.45);
+            color: #ffeebb;
             font-weight: 600;
             font-size: 0.95rem;
             letter-spacing: 0.5px;
             padding: 0.7rem;
             border-radius: 8px;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 16px rgba(120, 0, 0, 0.25);
+            box-shadow: 0 4px 16px rgba(120, 0, 0, 0.35);
         }
 
         .btn-login:hover {
-            background: linear-gradient(135deg, #8b0000, #c01a00);
-            box-shadow: 0 6px 20px rgba(140, 0, 0, 0.35);
+            background: linear-gradient(135deg, #9a0000, #cc0000);
+            border-color: #d4af37;
+            box-shadow: 0 6px 20px rgba(160, 0, 0, 0.5);
             transform: translateY(-1px);
             color: #fff;
         }
@@ -187,18 +207,18 @@
         .btn-login:active { transform: translateY(0); }
 
         .alert {
-            background: #fff5f5;
-            border: 1px solid #fbb;
-            color: #8b0000;
+            background: rgba(80, 0, 0, 0.40);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffb3b3;
             font-size: 0.85rem;
             border-radius: 8px;
             padding: 0.65rem 0.85rem;
         }
 
         .alert-success {
-            background: #f0fff4;
-            border-color: #9ae6b4;
-            color: #276749;
+            background: rgba(0, 60, 20, 0.40);
+            border-color: rgba(77, 255, 140, 0.3);
+            color: #a8ffcc;
         }
 
         /* Responsive: stack di mobile */

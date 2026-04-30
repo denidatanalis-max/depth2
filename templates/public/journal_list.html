@@ -25,7 +25,7 @@
             content: '';
             position: fixed;
             inset: 0;
-            background: rgba(5, 0, 0, 0.75);
+            background: rgba(5, 0, 0, 0.45);
             z-index: 0;
         }
 
@@ -39,7 +39,7 @@
 
         /* Navbar */
         .top-nav {
-            background: linear-gradient(90deg, rgba(60,0,0,0.92), rgba(20,0,0,0.95));
+            background: linear-gradient(90deg, rgba(60,0,0,0.68), rgba(20,0,0,0.75));
             border-bottom: 1px solid rgba(212,175,55,0.3);
             padding: 0.75rem 0;
             backdrop-filter: blur(4px);
@@ -88,7 +88,7 @@
         }
 
         .hero-section p {
-            color: rgba(255,220,170,0.6);
+            color: rgba(255,220,170,0.85);
             font-size: 0.95rem;
         }
 
@@ -105,7 +105,7 @@
 
         /* Cards */
         .journal-card {
-            background: linear-gradient(rgba(10,0,0,0.78), rgba(10,0,0,0.78));
+            background: linear-gradient(rgba(25,5,0,0.50), rgba(25,5,0,0.50));
             border: 1px solid rgba(212,175,55,0.25) !important;
             border-radius: 12px !important;
             box-shadow: 0 4px 20px rgba(0,0,0,0.45);
@@ -128,19 +128,19 @@
         }
 
         .journal-card .card-text {
-            color: rgba(255,220,170,0.65);
+            color: rgba(255,220,170,0.90);
             font-size: 0.85rem;
         }
 
         .card-abstract {
-            color: rgba(255,248,238,0.75);
+            color: rgba(255,248,238,0.92);
             font-size: 0.875rem;
             line-height: 1.6;
         }
 
         .card-footer-themed {
-            background: rgba(80,0,0,0.3);
-            border-top: 1px solid rgba(212,175,55,0.15);
+            background: rgba(80,0,0,0.42);
+            border-top: 1px solid rgba(212,175,55,0.20);
             padding: 0.75rem 1.25rem;
         }
 
@@ -172,16 +172,16 @@
 
         .empty-state i {
             font-size: 4rem;
-            color: rgba(212,175,55,0.25);
+            color: rgba(212,175,55,0.50);
         }
 
         .empty-state h4 {
-            color: rgba(255,220,170,0.6);
+            color: rgba(255,220,170,0.85);
             margin-top: 1rem;
         }
 
         .empty-state p {
-            color: rgba(255,220,170,0.35);
+            color: rgba(255,220,170,0.65);
         }
 
         /* Footer */
@@ -190,15 +190,15 @@
             padding: 1.25rem 0;
             text-align: center;
             border-top: 1px solid rgba(212,175,55,0.15);
-            color: rgba(255,220,170,0.35);
+            color: rgba(255,220,170,0.60);
             font-size: 0.8rem;
         }
 
         /* Meta info */
-        .meta-info i { color: rgba(212,175,55,0.55); }
+        .meta-info i { color: rgba(212,175,55,0.80); }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(10,0,0,0.3); }
+        ::-webkit-scrollbar-track { background: rgba(10,0,0,0.15); }
         ::-webkit-scrollbar-thumb { background: rgba(139,0,0,0.6); border-radius: 3px; }
     </style>
 </head>
@@ -211,8 +211,8 @@
             <a class="nav-brand" href="{% url 'public_journals' %}">
                 <i class="bi bi-journal-text me-2"></i>Depth Culture
             </a>
-            <a href="{% url 'login' %}" class="btn-nav-login">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Login
+            <a href="javascript:history.back()" class="btn-nav-login">
+                ← Kembali
             </a>
         </div>
     </nav>
