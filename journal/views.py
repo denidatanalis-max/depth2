@@ -10,6 +10,8 @@ from .forms import JournalCreateForm, JournalUploadForm, JournalUploadWithAbstra
 
 def login_view(request):
     if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('/admin/')
         return redirect('dashboard')
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -21,6 +23,8 @@ def login_view(request):
             if profile:
                 profile.session_key = request.session.session_key
                 profile.save(update_fields=['session_key'])
+            if user.is_superuser:
+                return redirect('/admin/')
             return redirect('dashboard')
         messages.error(request, 'Username atau password salah.')
     return render(request, 'login.html')
