@@ -11,7 +11,13 @@ SECRET_KEY = 'django-insecure-$1*0rlj1yth(f7bp$yqzo+dni9%65_)0!l_v0xt+!hkww%-w9#
 
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'unitest.my.id',
+    'www.unitest.my.id',
+    'localhost',
+    '127.0.0.1',
+    '192.168.1.1'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
