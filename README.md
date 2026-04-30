@@ -65,6 +65,12 @@ python manage.py runserver
 
 Buka browser: http://127.0.0.1:8000/
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+## Hierarki
+=======
+>>>>>>> 76c0dd3
 ---
 
 ## Akun Demo
@@ -89,6 +95,10 @@ Password semua akun: `demo1234`
 ---
 
 ## Hierarki User
+<<<<<<< HEAD
+=======
+>>>>>>> 661d5a6 (30042026)
+>>>>>>> 76c0dd3
 
 ```
 Manager 1 (Budi Santoso) — manager1

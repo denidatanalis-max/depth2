@@ -47,7 +47,7 @@
             <tbody>
                 {% for j in pending %}
                 <tr>
-                    <td><a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none fw-medium">{{ j.title }}</a></td>
+                    <td><a href="{% url 'journal_detail' j.pk %}" class="fw-medium" style="color:#d4af37;text-decoration:none;">{{ j.title }}</a></td>
                     <td>{{ j.author.user.get_full_name }}</td>
                     <td class="text-muted small">{{ j.updated_at|date:"d M Y H:i" }}</td>
                     <td>
@@ -83,7 +83,7 @@
             <tbody>
                 {% for j in all_journals %}
                 <tr>
-                    <td><a href="{% url 'journal_detail' j.pk %}" class="text-decoration-none">{{ j.title }}</a></td>
+                    <td><a href="{% url 'journal_detail' j.pk %}" style="color:#d4af37;text-decoration:none;">{{ j.title }}</a></td>
                     <td>{{ j.author.user.get_full_name }}</td>
                     <td><span class="badge bg-{{ j.status_badge_class }}">{{ j.get_status_display }}</span></td>
                     <td>{{ j.revision_count }}</td>
