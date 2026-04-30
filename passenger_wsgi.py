@@ -1,8 +1,7 @@
-import os
-import sys
+import sys, os
 
-PROJ_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, PROJ_DIR)
+PROJECT_ROOT = '/home/unitestm/depth2'
+sys.path.insert(0, PROJECT_ROOT)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jurnal_poc.settings')
 
