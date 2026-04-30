@@ -2,6 +2,9 @@ from django.contrib.auth import logout
 from django.contrib import messages
 from django.shortcuts import redirect
 
+# URL yang boleh diakses superuser di luar /admin/
+_SUPERUSER_ALLOWED = ('/admin/', '/login/', '/logout/')
+
 
 class SingleSessionMiddleware:
     """Paksa satu sesi per user. Jika login di perangkat lain, sesi lama otomatis logout."""
@@ -11,6 +14,12 @@ class SingleSessionMiddleware:
 
     def __call__(self, request):
         if request.user.is_authenticated:
+            # Superuser hanya boleh di /admin/ — redirect ke sana jika akses halaman lain
+            if request.user.is_superuser:
+                if not request.path.startswith(_SUPERUSER_ALLOWED):
+                    return redirect('/admin/')
+
+            # Cek single session untuk user biasa
             try:
                 profile = request.user.profile
                 stored_key = profile.session_key
