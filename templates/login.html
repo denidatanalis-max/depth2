@@ -89,8 +89,9 @@
         }
 
         .brand-icon {
-            font-size: 3rem;
-            color: #d4af37;
+            width: 3rem;
+            height: 3rem;
+            object-fit: contain;
             display: block;
             margin-bottom: 1rem;
             filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
@@ -235,7 +236,7 @@
         <!-- Kiri: brand panel -->
         <div class="panel-left">
             <div class="brand-area">
-                <i class="bi bi-journal-text brand-icon"></i>
+                <img src="{% static 'logo/logo.png' %}" alt="Logo" class="brand-icon">
                 <div class="brand-title">Depth<br>Culture</div>
                 <p class="brand-subtitle">Sistem Manajemen<br>Jurnal Perusahaan</p>
             </div>
