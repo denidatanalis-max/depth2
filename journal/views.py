@@ -464,16 +464,16 @@ def scoring_submit(request, pk):
             if rec == JournalScore.Recommendation.RECOMMEND:
                 journal.status = JournalStatus.UNDER_RECOMMENDATION
                 action = 'Dikirim ke Tim Rekomendasi'
-                msg = f'Skor: {score.total_score}/400. Hasil Scoring: Layak — menunggu Tim Rekomendasi.'
+                msg = f'Skor: {score.total_score}/500. Hasil Scoring: Layak — menunggu Tim Rekomendasi.'
             elif rec == JournalScore.Recommendation.REVISION:
                 journal.status = JournalStatus.SCORE_REVISION
                 journal.revision_count += 1
                 action = 'Revisi dari Scoring'
-                msg = f'Skor: {score.total_score}/400. Rekomendasi: Perlu Revisi.'
+                msg = f'Skor: {score.total_score}/500. Rekomendasi: Perlu Revisi.'
             else:
                 journal.status = JournalStatus.NOT_RECOMMENDED
                 action = 'Tidak Direkomendasikan'
-                msg = f'Skor: {score.total_score}/400. Rekomendasi: Tidak Layak.'
+                msg = f'Skor: {score.total_score}/500. Rekomendasi: Tidak Layak.'
 
             journal.save()
             log_note = msg

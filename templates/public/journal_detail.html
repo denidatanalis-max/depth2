@@ -304,42 +304,51 @@
                     <div class="themed-card-body">
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="score-label">Orisinalitas</span>
-                                <span class="score-val">{{ score.originality }}/100</span>
+                                <span class="score-label">Kejelasan Penulisan</span>
+                                <span class="score-val">{{ score.writing_clarity }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.originality }}%;background:linear-gradient(90deg,#7a0000,#d4af37);"></div>
+                                <div class="progress-bar" style="width:{{ score.writing_clarity }}%;background:linear-gradient(90deg,#7a0000,#d4af37);"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="score-label">Metodologi</span>
-                                <span class="score-val">{{ score.methodology }}/100</span>
+                                <span class="score-label">Identifikasi Masalah</span>
+                                <span class="score-val">{{ score.problem_clarity }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.methodology }}%;background:linear-gradient(90deg,#005080,#4da6ff);"></div>
+                                <div class="progress-bar" style="width:{{ score.problem_clarity }}%;background:linear-gradient(90deg,#005080,#4da6ff);"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="score-label">Kualitas Penulisan</span>
-                                <span class="score-val">{{ score.writing_quality }}/100</span>
+                                <span class="score-label">Kualitas Solusi</span>
+                                <span class="score-val">{{ score.solution_quality }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.writing_quality }}%;background:linear-gradient(90deg,#7a4800,#ffb84d);"></div>
+                                <div class="progress-bar" style="width:{{ score.solution_quality }}%;background:linear-gradient(90deg,#7a4800,#ffb84d);"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="score-label">Dampak Positif</span>
+                                <span class="score-val">{{ score.positive_impact }}/100</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width:{{ score.positive_impact }}%;background:linear-gradient(90deg,#004d1a,#4dffaa);"></div>
                             </div>
                         </div>
                         <div class="mb-2">
                             <div class="d-flex justify-content-between mb-1">
-                                <span class="score-label">Relevansi</span>
-                                <span class="score-val">{{ score.relevance }}/100</span>
+                                <span class="score-label">Identifikasi Risiko</span>
+                                <span class="score-val">{{ score.risk_awareness }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.relevance }}%;background:linear-gradient(90deg,#004d1a,#4dffaa);"></div>
+                                <div class="progress-bar" style="width:{{ score.risk_awareness }}%;background:linear-gradient(90deg,#4d0080,#b84dff);"></div>
                             </div>
                         </div>
                         <div class="score-total">
-                            <h4>{{ score.total_score }}/400</h4>
+                            <h4>{{ score.total_score }}/500</h4>
                             <small>Total Skor</small>
                         </div>
                     </div>

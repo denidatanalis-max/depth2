@@ -76,7 +76,7 @@
                         <td><a href="{% url 'journal_detail' j.pk %}" style="color:#d4af37;text-decoration:none;">{{ j.title }}</a></td>
                         <td>{{ j.author.user.get_full_name }}</td>
                         <td><span class="badge bg-{{ j.status_badge_class }}">{{ j.get_status_display }}</span></td>
-                        <td>{% if j.latest_score %}{{ j.latest_score.total_score }}/400{% else %}-{% endif %}</td>
+                        <td>{% if j.latest_score %}{{ j.latest_score.total_score }}/500{% else %}-{% endif %}</td>
                         <td><a href="{% url 'journal_detail' j.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a></td>
                     </tr>
                     {% endfor %}

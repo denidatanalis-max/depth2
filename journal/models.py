@@ -151,21 +151,30 @@ class JournalScore(models.Model):
         null=True,
         limit_choices_to={'role': Role.SCORING},
     )
-    originality = models.PositiveIntegerField(
-        'Orisinalitas (1-100)',
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    writing_clarity = models.PositiveIntegerField(
+        'Kejelasan Penulisan (0-100)',
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0,
     )
-    methodology = models.PositiveIntegerField(
-        'Metodologi (1-100)',
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    problem_clarity = models.PositiveIntegerField(
+        'Identifikasi Masalah (0-100)',
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0,
     )
-    writing_quality = models.PositiveIntegerField(
-        'Kualitas Penulisan (1-100)',
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    solution_quality = models.PositiveIntegerField(
+        'Kualitas Solusi (0-100)',
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0,
     )
-    relevance = models.PositiveIntegerField(
-        'Relevansi (1-100)',
-        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    positive_impact = models.PositiveIntegerField(
+        'Dampak Positif (0-100)',
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0,
+    )
+    risk_awareness = models.PositiveIntegerField(
+        'Identifikasi Risiko (0-100)',
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0,
     )
     note = models.TextField('Catatan Penilai', blank=True)
 
@@ -185,15 +194,15 @@ class JournalScore(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Skor {self.journal.title} — {self.total_score}/400'
+        return f'Skor {self.journal.title} — {self.total_score}/500'
 
     @property
     def total_score(self):
-        return self.originality + self.methodology + self.writing_quality + self.relevance
+        return self.writing_clarity + self.problem_clarity + self.solution_quality + self.positive_impact + self.risk_awareness
 
     @property
     def average_score(self):
-        return self.total_score / 4
+        return self.total_score / 5
 
 
 class JournalLog(models.Model):

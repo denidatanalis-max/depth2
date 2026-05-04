@@ -119,29 +119,33 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between small"><span>Orisinalitas</span><span style="color:#d4af37;">{{ score.originality }}/100</span></div>
-                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.originality }}%;background:linear-gradient(90deg,#7a0000,#d4af37);"></div></div>
+                            <div class="d-flex justify-content-between small"><span>Kejelasan Penulisan</span><span style="color:#d4af37;">{{ score.writing_clarity }}/100</span></div>
+                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.writing_clarity }}%;background:linear-gradient(90deg,#7a0000,#d4af37);"></div></div>
                         </div>
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between small"><span>Metodologi</span><span style="color:#d4af37;">{{ score.methodology }}/100</span></div>
-                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.methodology }}%;background:linear-gradient(90deg,#005080,#4da6ff);"></div></div>
+                            <div class="d-flex justify-content-between small"><span>Identifikasi Masalah</span><span style="color:#d4af37;">{{ score.problem_clarity }}/100</span></div>
+                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.problem_clarity }}%;background:linear-gradient(90deg,#005080,#4da6ff);"></div></div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small"><span>Kualitas Solusi</span><span style="color:#d4af37;">{{ score.solution_quality }}/100</span></div>
+                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.solution_quality }}%;background:linear-gradient(90deg,#7a4800,#ffb84d);"></div></div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between small"><span>Kualitas Penulisan</span><span style="color:#d4af37;">{{ score.writing_quality }}/100</span></div>
-                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.writing_quality }}%;background:linear-gradient(90deg,#7a4800,#ffb84d);"></div></div>
+                            <div class="d-flex justify-content-between small"><span>Dampak Positif</span><span style="color:#d4af37;">{{ score.positive_impact }}/100</span></div>
+                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.positive_impact }}%;background:linear-gradient(90deg,#004d1a,#4dffaa);"></div></div>
                         </div>
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between small"><span>Relevansi</span><span style="color:#d4af37;">{{ score.relevance }}/100</span></div>
-                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.relevance }}%;background:linear-gradient(90deg,#004d1a,#4dffaa);"></div></div>
+                            <div class="d-flex justify-content-between small"><span>Identifikasi Risiko</span><span style="color:#d4af37;">{{ score.risk_awareness }}/100</span></div>
+                            <div class="progress" style="height:8px;background:rgba(255,255,255,0.08);"><div class="progress-bar" style="width:{{ score.risk_awareness }}%;background:linear-gradient(90deg,#4d0080,#b84dff);"></div></div>
                         </div>
                     </div>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong>Total Skor:</strong> <span class="fs-5" style="color:#d4af37;">{{ score.total_score }}/400</span>
+                        <strong>Total Skor:</strong> <span class="fs-5" style="color:#d4af37;">{{ score.total_score }}/500</span>
                     </div>
                     <div>
                         <strong>Rekomendasi:</strong>
@@ -169,10 +173,10 @@
                     <tbody>
                         {% for log in logs %}
                         <tr>
-                            <td class="text-muted small" style="width:140px;">{{ log.timestamp|date:"d/m/Y H:i" }}</td>
+                            <td class="text-black small" style="width:140px;">{{ log.timestamp|date:"d/m/Y H:i" }}</td>
                             <td><strong>{{ log.action }}</strong></td>
                             <td class="small">{{ log.by_user.user.get_full_name|default:"-" }}</td>
-                            <td class="small text-muted">{{ log.note }}</td>
+                            <td class="small text-black">{{ log.note }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -556,20 +560,24 @@
                 <form method="post" action="{% url 'scoring_submit' journal.pk %}">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label class="form-label small">Orisinalitas (1-100)</label>
-                        <input type="number" name="originality" min="1" max="100" class="form-control" required>
+                        <label class="form-label small">Kejelasan Penulisan (0-100)</label>
+                        <input type="number" name="writing_clarity" min="0" max="100" class="form-control" required placeholder="Seberapa mudah dipahami cara penulisannya">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small">Metodologi (1-100)</label>
-                        <input type="number" name="methodology" min="1" max="100" class="form-control" required>
+                        <label class="form-label small">Identifikasi Masalah (0-100)</label>
+                        <input type="number" name="problem_clarity" min="0" max="100" class="form-control" required placeholder="Seberapa jelas masalah yang akan dipecahkan">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small">Kualitas Penulisan (1-100)</label>
-                        <input type="number" name="writing_quality" min="1" max="100" class="form-control" required>
+                        <label class="form-label small">Kualitas Solusi (0-100)</label>
+                        <input type="number" name="solution_quality" min="0" max="100" class="form-control" required placeholder="Seberapa baik solusi yang ditawarkan">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small">Relevansi (1-100)</label>
-                        <input type="number" name="relevance" min="1" max="100" class="form-control" required>
+                        <label class="form-label small">Dampak Positif (0-100)</label>
+                        <input type="number" name="positive_impact" min="0" max="100" class="form-control" required placeholder="Seberapa signifikan hasil/manfaat positifnya">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small">Identifikasi Risiko (0-100)</label>
+                        <input type="number" name="risk_awareness" min="0" max="100" class="form-control" required placeholder="Seberapa baik risiko/hasil negatif diidentifikasi">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small">Rekomendasi</label>

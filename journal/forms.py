@@ -54,20 +54,22 @@ class ReviewForm(forms.Form):
 class ScoringForm(forms.ModelForm):
     class Meta:
         model = JournalScore
-        fields = ['originality', 'methodology', 'writing_quality', 'relevance', 'recommendation', 'note']
+        fields = ['writing_clarity', 'problem_clarity', 'solution_quality', 'positive_impact', 'risk_awareness', 'recommendation', 'note']
         widgets = {
-            'originality': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
-            'methodology': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
-            'writing_quality': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
-            'relevance': forms.NumberInput(attrs={'min': 1, 'max': 100, 'class': 'form-control'}),
+            'writing_clarity': forms.NumberInput(attrs={'min': 0, 'max': 100, 'class': 'form-control'}),
+            'problem_clarity': forms.NumberInput(attrs={'min': 0, 'max': 100, 'class': 'form-control'}),
+            'solution_quality': forms.NumberInput(attrs={'min': 0, 'max': 100, 'class': 'form-control'}),
+            'positive_impact': forms.NumberInput(attrs={'min': 0, 'max': 100, 'class': 'form-control'}),
+            'risk_awareness': forms.NumberInput(attrs={'min': 0, 'max': 100, 'class': 'form-control'}),
             'recommendation': forms.Select(attrs={'class': 'form-select'}),
             'note': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Catatan dan saran untuk penulis...'}),
         }
         labels = {
-            'originality': 'Orisinalitas (1-100)',
-            'methodology': 'Metodologi (1-100)',
-            'writing_quality': 'Kualitas Penulisan (1-100)',
-            'relevance': 'Relevansi (1-100)',
+            'writing_clarity': 'Kejelasan Penulisan (0-100)',
+            'problem_clarity': 'Identifikasi Masalah (0-100)',
+            'solution_quality': 'Kualitas Solusi (0-100)',
+            'positive_impact': 'Dampak Positif (0-100)',
+            'risk_awareness': 'Identifikasi Risiko (0-100)',
             'recommendation': 'Rekomendasi',
             'note': 'Catatan Penilai',
         }
