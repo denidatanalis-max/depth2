@@ -8,6 +8,12 @@ from .models import Journal, JournalLog, JournalScore, JournalStatus, Role, User
 from .forms import JournalCreateForm, JournalUploadForm, JournalUploadWithAbstractForm, ReviewForm, ScoringForm
 
 
+def error_404(request, exception=None):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return render(request, '404.html', status=404)
+
+
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('dashboard')

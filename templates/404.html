@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Halaman Tidak Ditemukan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    {% load static %}
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: url("{% static 'img/background_login5.jpeg' %}") center / 100% 100% no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(3, 0, 0, 0.45);
+            z-index: 0;
+        }
+
+        /* ── 4D+1 ── */
+        .logo-4d {
+            position: fixed;
+            top: 5%;
+            left: 4%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2em;
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .logo-4d-text {
+            display: flex;
+            align-items: baseline;
+            gap: 0.1em;
+        }
+
+        .logo-4d .text-4d {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            color: #cc1111;
+            text-shadow: 2px 2px 0 #7a0000, 0 0 30px rgba(220,0,0,0.6);
+            letter-spacing: -2px;
+        }
+
+        .logo-4d .text-plus1 {
+            font-size: clamp(1.6rem, 3vw, 2.8rem);
+            font-weight: 900;
+            color: #e8e8e8;
+            text-shadow: 2px 2px 0 #555;
+        }
+
+        .logo-4d-line {
+            width: 140%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff3300 30%, #ff6600 50%, #ff3300 70%, transparent);
+            box-shadow: 0 0 6px 2px rgba(255,60,0,0.9), 0 0 16px 4px rgba(200,0,0,0.5);
+            border-radius: 50%;
+        }
+
+        /* ── Garis dekoratif bawah ── */
+        .deco-line {
+            position: fixed;
+            bottom: 17%;
+            left: 4%;
+            right: 4%;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            z-index: 2;
+        }
+
+        .deco-line .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(180,0,0,0.8), transparent);
+        }
+
+        .deco-diamond {
+            width: 7px;
+            height: 7px;
+            background: #cc1111;
+            transform: rotate(45deg);
+            box-shadow: 0 0 6px rgba(200,0,0,0.8);
+            flex-shrink: 0;
+        }
+
+        /* ── Bottom bar ── */
+        .bottom-bar {
+            position: fixed;
+            bottom: 5%;
+            left: 4%;
+            right: 4%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            z-index: 2;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            font-size: clamp(0.9rem, 2vw, 1.7rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .brand-name .depth { color: #cc1111; }
+
+        .divider-v {
+            width: 2px;
+            height: 2.5rem;
+            background: #cc1111;
+            flex-shrink: 0;
+        }
+
+        .brand-tagline {
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            color: rgba(255,255,255,0.80);
+            line-height: 1.6;
+            white-space: nowrap;
+        }
+
+        .brand-slogan {
+            font-size: clamp(0.5rem, 0.85vw, 0.72rem);
+            color: #c8962a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ── Card 404 ── */
+        .wrap {
+            position: relative;
+            z-index: 3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-404 {
+            width: 420px;
+            max-width: 92vw;
+            background: rgba(15, 2, 2, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 18px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.1);
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: clamp(4rem, 15vw, 7rem);
+            font-weight: 900;
+            line-height: 1;
+            color: #cc1111;
+            text-shadow: 2px 2px 0 #7a0000, 0 0 40px rgba(200,0,0,0.5);
+            letter-spacing: -4px;
+        }
+
+        .error-title {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin: 0.5rem 0 0.3rem;
+        }
+
+        .error-title .depth { color: #cc1111; }
+
+        .error-desc {
+            color: rgba(255, 220, 170, 0.60);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .progress-bar-wrap {
+            height: 3px;
+            background: rgba(212, 175, 55, 0.15);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, #cc1111, #d4af37);
+            border-radius: 99px;
+            animation: shrink 3s linear forwards;
+        }
+
+        @keyframes shrink {
+            from { width: 100%; }
+            to   { width: 0%; }
+        }
+
+        @media (max-width: 640px) {
+            body { background-size: cover; }
+            .deco-line, .brand-slogan, .brand-tagline, .divider-v { display: none; }
+            .bottom-bar { justify-content: center; bottom: 2%; }
+            .brand-name { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 4D+1 -->
+    <div class="logo-4d">
+        <div class="logo-4d-text">
+            <span class="text-4d">4D</span>
+            <span class="text-plus1">+1</span>
+        </div>
+        <div class="logo-4d-line"></div>
+    </div>
+
+    <!-- Garis dekoratif -->
+    <div class="deco-line">
+        <div class="line"></div>
+        <div class="deco-diamond"></div>
+        <div class="line"></div>
+        <div class="deco-diamond"></div>
+        <div class="line"></div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+        <div class="brand-left">
+            <div class="brand-name">THE <span class="depth">DEPTH</span> CULTURE</div>
+            <div class="divider-v"></div>
+            <div class="brand-tagline">Standardizing Thinking<br>to Drive Better Strategy</div>
+        </div>
+        <div class="brand-slogan">ONE STANDARD. ONE THINKING. ONE WINNING SYSTEM.</div>
+    </div>
+
+    <!-- Card 404 -->
+    <div class="wrap">
+        <div class="card-404">
+            <img src="{% static 'logo/logo.png' %}" alt="Logo"
+                 style="height:3rem;object-fit:contain;margin-bottom:1rem;filter:drop-shadow(0 0 8px rgba(212,175,55,0.4))">
+
+            <div class="error-code">404</div>
+            <div class="error-title">HALAMAN TIDAK <span class="depth">DITEMUKAN</span></div>
+            <p class="error-desc">Halaman yang Anda cari tidak tersedia.</p>
+            <div class="progress-bar-wrap">
+                <div class="progress-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            window.location.href = "{% url 'logout' %}";
+        }, 3000);
+    </script>
+</body>
+</html>
