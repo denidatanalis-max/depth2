@@ -87,7 +87,7 @@ All copy is in **Bahasa Indonesia**. Labels, navigation, button text, and system
 | `--stat-red` | `#ff6666` | Stat card accent |
 
 ### Background
-- Full-bleed **photo background** (`background_login2.png`) — appears to be a dark atmospheric/nature image.
+- Full-bleed **photo background** (`background_login5.png`) — appears to be a dark atmospheric/nature image.
 - Dark overlay `rgba(5, 0, 0, 0.45)` + `background-attachment: fixed`.
 - All UI panels are semi-transparent with `backdrop-filter: blur(2–8px)`.
 
@@ -183,7 +183,7 @@ All copy is in **Bahasa Indonesia**. Labels, navigation, button text, and system
 - **Not used** in this product.
 
 ### Assets Available
-- `assets/background_login2.png` — Full-bleed dark atmospheric background photo.
+- `assets/background_login5.png` — Full-bleed dark atmospheric background photo.
 
 ---
 
@@ -195,7 +195,7 @@ All copy is in **Bahasa Indonesia**. Labels, navigation, button text, and system
 ├── SKILL.md                     ← Agent skill descriptor
 ├── colors_and_type.css          ← CSS custom properties for colors + typography
 ├── assets/
-│   └── background_login2.png   ← Full-bleed background photo
+│   └── background_login5.png   ← Full-bleed background photo
 ├── preview/
 │   ├── colors_primary.html      ← Primary color swatches
 │   ├── colors_semantic.html     ← Semantic / UI color tokens

@@ -11,7 +11,7 @@
         * { box-sizing: border-box; }
 
         body {
-            background-image: url("{% static 'img/background_login2.png' %}");
+            background-image: url("{% static 'img/background_login5.jpeg' %}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -57,19 +57,34 @@
         .sidebar-brand {
             padding: 1.25rem 1.25rem 1rem;
             border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
-        .sidebar-brand h5 {
-            color: #d4af37;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin: 0;
+        .sidebar-brand-logo {
+            width: auto;
+            height: 2.5rem;
+            object-fit: contain;
+            flex-shrink: 0;
             filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4));
         }
 
-        .sidebar-brand small {
-            color: rgba(255, 220, 170, 0.70);
-            font-size: 0.75rem;
+        .sidebar-brand-text .brand-main {
+            font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .sidebar-brand-text .brand-main .depth { color: #cc1111; }
+
+        .sidebar-brand-text small {
+            color: rgba(255, 220, 170, 0.60);
+            font-size: 0.68rem;
         }
 
         .sidebar nav {
@@ -390,8 +405,11 @@
         {% if user.is_authenticated %}
         <div class="sidebar">
             <div class="sidebar-brand">
-                <h5><i class="bi bi-journal-text"></i> Depth Culture</h5>
-                <small>Sistem Manajemen Jurnal</small>
+                <img src="{% static 'logo/logo.png' %}" alt="Logo" class="sidebar-brand-logo">
+                <div class="sidebar-brand-text">
+                    <div class="brand-main">THE <span class="depth">DEPTH</span> CULTURE</div>
+                    <small>Sistem Manajemen Jurnal</small>
+                </div>
             </div>
             <nav class="nav flex-column flex-grow-1">
                 <a class="nav-link" href="{% url 'public_journals' %}"><i class="bi bi-globe"></i> Publikasi</a>

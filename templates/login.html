@@ -9,173 +9,236 @@
     {% load static %}
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
 
         body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-image: url("{% static 'img/background_login2.png' %}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: url("{% static 'img/background_login5.jpeg' %}") center / 100% 100% no-repeat;
             position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
+        /* Overlay gelap */
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background: rgba(5, 0, 0, 0.45);
+            background: rgba(3, 0, 0, 0.25);
             z-index: 0;
         }
 
-        .login-box {
-            position: relative;
-            z-index: 1;
+        /* ── 4D+1 — pojok kiri atas ── */
+        .logo-4d {
+            position: fixed;
+            top: 5%;
+            left: 4%;
             display: flex;
-            width: 860px;
-            max-width: 95vw;
-            min-height: 500px;
-            border-radius: 20px;
-            overflow: hidden;
+            flex-direction: column;
+            gap: 0.2em;
+            line-height: 1;
+            z-index: 2;
+        }
+
+        .logo-4d-text {
+            display: flex;
+            align-items: baseline;
+            gap: 0.1em;
+        }
+
+        .logo-4d .text-4d {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 900;
+            color: #cc1111;
+            text-shadow:
+                2px 2px 0 #7a0000,
+                0 0 30px rgba(220, 0, 0, 0.6),
+                0 0 60px rgba(200, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+
+        .logo-4d .text-plus1 {
+            font-size: clamp(1.6rem, 3vw, 2.8rem);
+            font-weight: 900;
+            color: #e8e8e8;
+            text-shadow: 2px 2px 0 #555, 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .logo-4d-line {
+            width: 140%;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #ff3300 30%, #ff6600 50%, #ff3300 70%, transparent);
             box-shadow:
-                0 20px 60px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(212, 175, 55, 0.25);
+                0 0 6px 2px rgba(255, 60, 0, 0.9),
+                0 0 16px 4px rgba(200, 0, 0, 0.5),
+                0 0 30px 6px rgba(180, 0, 0, 0.3);
+            border-radius: 50%;
         }
 
-        /* ── Panel kiri — brand ── */
-        .panel-left {
-            width: 42%;
-            background: linear-gradient(160deg, rgba(80, 0, 0, 0.80) 0%, rgba(20, 0, 0, 0.88) 100%);
-            border-right: 1px solid rgba(212, 175, 55, 0.25);
-            padding: 3rem 2.5rem;
+        /* ── Garis dekoratif bawah ── */
+        .deco-line {
+            position: fixed;
+            bottom: 17%;
+            left: 4%;
+            right: 4%;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            align-items: center;
+            gap: 0.6rem;
+            z-index: 2;
         }
 
-        .panel-left::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            right: -60px;
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.05);
-        }
-
-        .panel-left::before {
-            content: '';
-            position: absolute;
-            top: -40px;
-            left: -40px;
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            background: rgba(212, 175, 55, 0.04);
-        }
-
-        .brand-area {
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-icon {
-            width: 3rem;
-            height: 3rem;
-            object-fit: contain;
-            display: block;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
-        }
-
-        .brand-title {
-            color: #fff8ee;
-            font-size: 1.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            line-height: 1.2;
-        }
-
-        .brand-subtitle {
-            color: rgba(255, 220, 170, 0.75);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            line-height: 1.5;
-        }
-
-        .panel-tagline {
-            position: relative;
-            z-index: 1;
-            color: rgba(255, 220, 150, 0.60);
-            font-size: 0.75rem;
-            border-top: 1px solid rgba(212, 175, 55, 0.2);
-            padding-top: 1rem;
-        }
-
-        /* ── Panel kanan — form ── */
-        .panel-right {
+        .deco-line .line {
             flex: 1;
-            background: rgba(25, 5, 0, 0.55);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 3rem 2.5rem;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(180, 0, 0, 0.8), transparent);
+        }
+
+        .deco-diamond {
+            width: 7px;
+            height: 7px;
+            background: #cc1111;
+            transform: rotate(45deg);
+            box-shadow: 0 0 6px rgba(200, 0, 0, 0.8);
+            flex-shrink: 0;
+        }
+
+        /* ── Bottom bar ── */
+        .bottom-bar {
+            position: fixed;
+            bottom: 5%;
+            left: 4%;
+            right: 4%;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            z-index: 2;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .brand-name {
+            font-size: clamp(0.9rem, 2vw, 1.7rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .brand-name .depth { color: #cc1111; }
+
+        .divider-v {
+            width: 2px;
+            height: 2.5rem;
+            background: #cc1111;
+            flex-shrink: 0;
+        }
+
+        .brand-tagline {
+            font-size: clamp(0.6rem, 1vw, 0.85rem);
+            color: rgba(255, 255, 255, 0.80);
+            line-height: 1.6;
+            white-space: nowrap;
+        }
+
+        .brand-slogan {
+            font-size: clamp(0.5rem, 0.85vw, 0.72rem);
+            color: #c8962a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ── Form login mengambang di tengah ── */
+        .login-wrap {
+            position: relative;
+            z-index: 3;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
             justify-content: center;
         }
 
-        .form-heading {
-            color: #d4af37;
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+        .login-card {
+            width: 380px;
+            max-width: 92vw;
+            background: rgba(15, 2, 2, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 18px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.1);
         }
 
+        .login-logo {
+            width: auto;
+            height: 3.5rem;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 1rem;
+            filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+        }
+
+        .form-heading {
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-align: center;
+            line-height: 1.2;
+            margin-bottom: 0.2rem;
+        }
+
+        .form-heading .depth { color: #cc1111; }
+
         .form-subheading {
-            color: rgba(255, 220, 170, 0.65);
-            font-size: 0.85rem;
-            margin-bottom: 2rem;
+            color: rgba(255, 220, 170, 0.55);
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 1.8rem;
         }
 
         .form-label {
             color: rgba(255, 220, 170, 0.85);
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.3rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .input-group-text {
-            background: rgba(100, 0, 0, 0.45);
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            background: rgba(100, 0, 0, 0.40);
+            border: 1px solid rgba(212, 175, 55, 0.30);
             border-right: none;
             color: #d4af37;
         }
 
         .form-control {
-            background: rgba(35, 5, 0, 0.40);
-            border: 1px solid rgba(212, 175, 55, 0.35);
+            background: rgba(30, 4, 0, 0.45);
+            border: 1px solid rgba(212, 175, 55, 0.30);
             border-left: none;
             color: #fff8ee;
             padding: 0.6rem 0.85rem;
         }
 
-        .form-control::placeholder { color: rgba(255, 200, 150, 0.40); }
+        .form-control::placeholder { color: rgba(255, 200, 150, 0.35); }
 
         .form-control:focus {
-            background: rgba(40, 5, 0, 0.50);
+            background: rgba(40, 5, 0, 0.55);
             border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
             color: #fff8ee;
         }
 
@@ -186,12 +249,12 @@
 
         .btn-login {
             background: linear-gradient(135deg, #7a0000, #a81500);
-            border: 1px solid rgba(212, 175, 55, 0.45);
+            border: 1px solid rgba(212, 175, 55, 0.40);
             color: #ffeebb;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             letter-spacing: 0.5px;
-            padding: 0.7rem;
+            padding: 0.65rem;
             border-radius: 8px;
             transition: all 0.2s ease;
             box-shadow: 0 4px 16px rgba(120, 0, 0, 0.35);
@@ -209,50 +272,109 @@
 
         .alert {
             background: rgba(80, 0, 0, 0.40);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.25);
             color: #ffb3b3;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             border-radius: 8px;
-            padding: 0.65rem 0.85rem;
+            padding: 0.6rem 0.8rem;
         }
 
-        .alert-success {
-            background: rgba(0, 60, 20, 0.40);
-            border-color: rgba(77, 255, 140, 0.3);
-            color: #a8ffcc;
+        .login-footer {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.7rem;
+            color: rgba(255, 220, 150, 0.40);
         }
 
-        /* Responsive: stack di mobile */
+        /* ── Responsive mobile ── */
         @media (max-width: 640px) {
-            .login-box { flex-direction: column; width: 100%; border-radius: 0; min-height: 100vh; }
-            .panel-left { width: 100%; padding: 2rem 1.5rem; min-height: auto; }
-            .panel-right { padding: 2rem 1.5rem; }
+            body {
+                background-size: cover;
+                background-position: center center;
+            }
+            /* Sembunyikan elemen dekoratif yang mengganggu di mobile */
+            .deco-line  { display: none; }
+            .brand-slogan { display: none; }
+            .brand-tagline { display: none; }
+            .divider-v  { display: none; }
+
+            /* Bottom bar: hanya tampilkan nama brand, rata tengah */
+            .bottom-bar {
+                bottom: 2%;
+                left: 0;
+                right: 0;
+                justify-content: center;
+                gap: 0;
+            }
+
+            .brand-name {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+                white-space: normal;
+                text-align: center;
+            }
+
+            /* 4D+1 lebih kecil agar tidak menumpuk form */
+            .logo-4d { top: 3%; left: 3%; }
+            .logo-4d .text-4d  { font-size: 3rem; }
+            .logo-4d .text-plus1 { font-size: 2rem; }
+
+            /* Form card: tetap di tengah, beri ruang dari atas dan bawah */
+            .login-wrap {
+                align-items: center;
+                padding: 4rem 1rem 5rem;
+            }
+
+            .login-card {
+                width: 100%;
+                max-width: 400px;
+                border-radius: 14px;
+                padding: 2rem 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-box">
 
-        <!-- Kiri: brand panel -->
-        <div class="panel-left">
-            <div class="brand-area">
-                <img src="{% static 'logo/logo.png' %}" alt="Logo" class="brand-icon">
-                <div class="brand-title">Depth<br>Culture</div>
-                <p class="brand-subtitle">Sistem Manajemen<br>Jurnal Perusahaan</p>
-            </div>
-            <div class="panel-tagline">
-                © Depth Culture — Internal System Deployment
-            </div>
+    <!-- 4D+1 pojok kiri atas -->
+    <div class="logo-4d">
+        <div class="logo-4d-text">
+            <span class="text-4d">4D</span>
+            <span class="text-plus1">+1</span>
         </div>
+        <div class="logo-4d-line"></div>
+    </div>
 
-        <!-- Kanan: form panel -->
-        <div class="panel-right">
-            <div class="form-heading">Selamat Datang</div>
-            <div class="form-subheading">Masuk untuk melanjutkan ke dashboard</div>
+    <!-- Garis dekoratif -->
+    <div class="deco-line">
+        <div class="line"></div>
+        <div class="deco-diamond"></div>
+        <div class="line"></div>
+        <div class="deco-diamond"></div>
+        <div class="line"></div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+        <div class="brand-left">
+            <div class="brand-name">THE <span class="depth">DEPTH</span> CULTURE</div>
+            <div class="divider-v"></div>
+            <div class="brand-tagline">Standardizing Thinking<br>to Drive Better Strategy</div>
+        </div>
+        <div class="brand-slogan">ONE STANDARD. ONE THINKING. ONE WINNING SYSTEM.</div>
+    </div>
+
+    <!-- Form login -->
+    <div class="login-wrap">
+        <div class="login-card">
+
+            <img src="{% static 'logo/logo.png' %}" alt="Logo" class="login-logo">
+            <div class="form-heading"><span class="depth">DEPTH</span> CULTURE</div>
+            <div class="form-subheading">joint with us</div>
 
             {% if messages %}
             {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} small mb-3">{{ message }}</div>
+            <div class="alert small mb-3">{{ message }}</div>
             {% endfor %}
             {% endif %}
 
@@ -278,8 +400,10 @@
                     <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
                 </button>
             </form>
-        </div>
 
+            <div class="login-footer">© nabati 2026 — Internal System Deployment</div>
+        </div>
     </div>
+
 </body>
 </html>
