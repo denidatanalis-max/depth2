@@ -7,209 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     {% load static %}
-    <style>
-        * { box-sizing: border-box; }
-
-        body {
-            background-image: url("{% static 'img/background_login5.jpeg' %}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            min-height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
-            color: #fff8ee;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: rgba(5,0,0,0.45);
-            z-index: 0;
-        }
-
-        .page-wrapper {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Navbar */
-        .top-nav {
-            background: linear-gradient(90deg, rgba(60,0,0,0.68), rgba(20,0,0,0.75));
-            border-bottom: 1px solid rgba(212,175,55,0.3);
-            padding: 0.75rem 0;
-            backdrop-filter: blur(4px);
-        }
-
-        .nav-brand {
-            color: #d4af37;
-            font-weight: 700;
-            font-size: 1.1rem;
-            letter-spacing: 0.5px;
-            text-decoration: none;
-            filter: drop-shadow(0 0 6px rgba(212,175,55,0.35));
-        }
-
-        .nav-brand:hover { color: #f0c84a; }
-
-        .btn-nav-login {
-            border: 1px solid rgba(212,175,55,0.5);
-            color: #d4af37;
-            background: transparent;
-            font-size: 0.85rem;
-            padding: 0.35rem 0.85rem;
-            border-radius: 6px;
-            transition: all 0.2s;
-            text-decoration: none;
-        }
-
-        .btn-nav-login:hover {
-            background: rgba(139,0,0,0.5);
-            color: #ffeebb;
-            border-color: #d4af37;
-        }
-
-        /* Hero */
-        .hero-section {
-            padding: 2.5rem 0;
-            border-bottom: 1px solid rgba(212,175,55,0.15);
-            background: linear-gradient(rgba(60,0,0,0.15), transparent);
-        }
-
-        .breadcrumb-link {
-            color: rgba(212,175,55,0.80);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.2s;
-        }
-
-        .breadcrumb-link:hover { color: #d4af37; }
-
-        .hero-title {
-            color: #d4af37;
-            font-size: 1.6rem;
-            font-weight: 700;
-            line-height: 1.3;
-            margin-top: 0.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .hero-meta {
-            color: rgba(255,220,170,0.85);
-            font-size: 0.9rem;
-        }
-
-        /* Cards */
-        .themed-card {
-            background: linear-gradient(rgba(25,5,0,0.50), rgba(25,5,0,0.50));
-            border: 1px solid rgba(212,175,55,0.25) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.45);
-            color: #fff8ee;
-            margin-bottom: 1.5rem;
-        }
-
-        .themed-card-header {
-            background: rgba(120,10,0,0.50);
-            border-bottom: 1px solid rgba(212,175,55,0.28);
-            border-radius: 12px 12px 0 0;
-            padding: 0.85rem 1.25rem;
-            color: #d4af37;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .themed-card-body {
-            padding: 1.25rem;
-        }
-
-        /* Abstract */
-        .abstract-text {
-            color: rgba(255,248,238,0.85);
-            line-height: 1.75;
-            font-size: 0.95rem;
-        }
-
-        /* Info table */
-        .info-table td {
-            padding: 0.45rem 0;
-            border: none;
-            font-size: 0.875rem;
-        }
-
-        .info-table td:first-child {
-            color: rgba(255,220,170,0.75);
-            width: 45%;
-        }
-
-        .info-table td:last-child {
-            color: rgba(255,248,238,0.85);
-        }
-
-        /* Score bars */
-        .score-label { color: rgba(255,220,170,0.92); font-size: 0.82rem; }
-        .score-val { color: #d4af37; font-size: 0.82rem; font-weight: 600; }
-
-        .progress {
-            background: rgba(255,255,255,0.08);
-            border-radius: 4px;
-            height: 8px;
-        }
-
-        .score-total {
-            background: rgba(212,175,55,0.08);
-            border: 1px solid rgba(212,175,55,0.25);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            text-align: center;
-            margin-top: 0.75rem;
-        }
-
-        .score-total h4 { color: #d4af37; margin: 0; }
-        .score-total small { color: rgba(255,220,170,0.75); font-size: 0.78rem; }
-
-        /* Download button */
-        .btn-download {
-            background: linear-gradient(135deg, #7a0000, #a81500);
-            border: 1px solid rgba(212,175,55,0.45);
-            color: #ffeebb;
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 0.65rem 1.25rem;
-            transition: all 0.2s;
-            box-shadow: 0 3px 14px rgba(120,0,0,0.3);
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-download:hover {
-            background: linear-gradient(135deg, #9a0000, #c01a00);
-            border-color: #d4af37;
-            color: #fff;
-            box-shadow: 0 5px 18px rgba(160,0,0,0.45);
-            transform: translateY(-1px);
-        }
-
-        /* Footer */
-        .page-footer {
-            margin-top: auto;
-            padding: 1.25rem 0;
-            text-align: center;
-            border-top: 1px solid rgba(212,175,55,0.15);
-            color: rgba(255,220,170,0.60);
-            font-size: 0.8rem;
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(10,0,0,0.15); }
-        ::-webkit-scrollbar-thumb { background: rgba(139,0,0,0.6); border-radius: 3px; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/journal-detail.css' %}">
 </head>
-<body>
+<body style="background-image: url({% static 'img/background_login5.jpeg' %})">
 <div class="page-wrapper">
 
     <!-- Navbar -->
@@ -257,7 +57,7 @@
                 {% if journal.file %}
                 <div class="themed-card">
                     <div class="themed-card-header">
-                        <i class="bi bi-file-earmark-pdf-fill me-2" style="color:#ff8080;"></i>File Jurnal
+                        <i class="bi bi-file-earmark-pdf-fill me-2 icon-pdf"></i>File Jurnal
                     </div>
                     <div class="themed-card-body text-center py-4">
                         <a href="{{ journal.file.url }}" class="btn-download" target="_blank">
@@ -299,7 +99,7 @@
                 {% if score %}
                 <div class="themed-card">
                     <div class="themed-card-header">
-                        <i class="bi bi-star-fill me-2" style="color:#f5d877;"></i>Skor Penilaian
+                        <i class="bi bi-star-fill me-2 icon-star"></i>Skor Penilaian
                     </div>
                     <div class="themed-card-body">
                         <div class="mb-3">
@@ -308,7 +108,7 @@
                                 <span class="score-val">{{ score.writing_clarity }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.writing_clarity }}%;background:linear-gradient(90deg,#7a0000,#d4af37);"></div>
+                                <div class="progress-bar pb-red" style="width:{{ score.writing_clarity }}%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -317,7 +117,7 @@
                                 <span class="score-val">{{ score.problem_clarity }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.problem_clarity }}%;background:linear-gradient(90deg,#005080,#4da6ff);"></div>
+                                <div class="progress-bar pb-blue" style="width:{{ score.problem_clarity }}%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -326,7 +126,7 @@
                                 <span class="score-val">{{ score.solution_quality }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.solution_quality }}%;background:linear-gradient(90deg,#7a4800,#ffb84d);"></div>
+                                <div class="progress-bar pb-orange" style="width:{{ score.solution_quality }}%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
@@ -335,7 +135,7 @@
                                 <span class="score-val">{{ score.positive_impact }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.positive_impact }}%;background:linear-gradient(90deg,#004d1a,#4dffaa);"></div>
+                                <div class="progress-bar pb-green" style="width:{{ score.positive_impact }}%"></div>
                             </div>
                         </div>
                         <div class="mb-2">
@@ -344,7 +144,7 @@
                                 <span class="score-val">{{ score.risk_awareness }}/100</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar" style="width:{{ score.risk_awareness }}%;background:linear-gradient(90deg,#4d0080,#b84dff);"></div>
+                                <div class="progress-bar pb-purple" style="width:{{ score.risk_awareness }}%"></div>
                             </div>
                         </div>
                         <div class="score-total">

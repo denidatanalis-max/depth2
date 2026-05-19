@@ -1,3 +1,0 @@
-[settings]
-SECRET_KEY = ganti-dengan-key-acak-yang-panjang
-DEBUG      = False
